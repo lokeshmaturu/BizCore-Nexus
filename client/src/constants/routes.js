@@ -22,6 +22,7 @@ export const ROUTES = {
   FINANCE: '/finance',
   HR: '/hr',
   SETTINGS: '/settings',
+  AUTOMATION: '/automation',
 
   // Error Pages
   UNAUTHORIZED: '/unauthorized',

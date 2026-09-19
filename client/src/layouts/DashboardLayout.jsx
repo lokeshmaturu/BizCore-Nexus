@@ -5,6 +5,7 @@ import Topbar from './Topbar';
 import ErrorBoundary from '../components/common/ErrorBoundary';
 import NexusCopilotDrawer from '../components/ai/NexusCopilotDrawer';
 import NotificationDrawer from '../components/notifications/NotificationDrawer';
+import CommandPalette from '../components/common/CommandPalette';
 
 export const DashboardLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -54,9 +55,10 @@ export const DashboardLayout = () => {
         </footer>
       </div>
 
-      {/* Global Phase 3 AI Copilot & Notification Drawers */}
+      {/* Global Phase 3 & 6 AI Copilot, Notification & Command Palette Drawers */}
       <NexusCopilotDrawer />
       <NotificationDrawer />
+      <CommandPalette />
     </div>
   );
 };

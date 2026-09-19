@@ -36,6 +36,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
     canManageLogistics,
     canManageFinance,
     canManageSettings,
+    canManageAutomation,
   } = usePermission();
 
   // Navigation Items defined with RBAC permissions
@@ -89,6 +90,13 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
       path: ROUTES.HR,
       icon: UserCheck,
       allowed: canManageHR,
+    },
+    {
+      label: 'Autonomous Workflows',
+      path: ROUTES.AUTOMATION,
+      icon: Sparkles,
+      allowed: canManageAutomation,
+      badge: 'v6.0',
     },
     {
       label: 'System Settings',

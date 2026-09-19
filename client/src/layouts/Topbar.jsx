@@ -18,6 +18,7 @@ import { useAuth } from '../hooks/useAuth';
 import { logoutUser } from '../store/authSlice';
 import { toggleNotificationDrawer } from '../store/notificationSlice';
 import { toggleCopilot } from '../store/aiSlice';
+import { toggleCommandPalette } from '../store/workflowSlice';
 import { ROUTES } from '../constants/routes';
 import { Avatar } from '../components/ui/Avatar';
 import { Badge } from '../components/ui/Badge';
@@ -66,14 +67,18 @@ export const Topbar = ({ onOpenMobileSidebar }) => {
           <Menu className="w-5 h-5" />
         </button>
 
-        {/* Global Search Bar */}
-        <div className="relative w-full hidden sm:block">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-          <input
-            type="text"
-            placeholder="Search orders, SKU catalog, customers, personnel (Ctrl + K)..."
-            className="w-full bg-slate-900/90 border border-slate-700/60 rounded-xl pl-10 pr-4 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all"
-          />
+        {/* Global Search Bar (Trigger for Ctrl+K Command Center) */}
+        <div
+          onClick={() => dispatch(toggleCommandPalette())}
+          className="relative w-full hidden sm:flex items-center cursor-pointer group"
+        >
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-hover:text-brand-400 transition-colors pointer-events-none" />
+          <div className="w-full bg-slate-900/90 hover:bg-slate-900 border border-slate-700/60 hover:border-brand-500/60 rounded-xl pl-10 pr-4 py-1.5 text-xs text-slate-400 flex items-center justify-between transition-all">
+            <span>Search actions, modules, records...</span>
+            <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-850 border border-slate-700 text-slate-300">
+              Ctrl+K
+            </kbd>
+          </div>
         </div>
       </div>
 

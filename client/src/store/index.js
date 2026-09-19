@@ -17,6 +17,7 @@ import notificationReducer from './notificationSlice';
 import settingsReducer from './settingsSlice';
 import currencyReducer from './currencySlice';
 import auditReducer from './auditSlice';
+import workflowReducer from './workflowSlice';
 
 export const store = configureStore({
   reducer: {
@@ -34,6 +35,7 @@ export const store = configureStore({
     settings: settingsReducer,
     currency: currencyReducer,
     audit: auditReducer,
+    workflow: workflowReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

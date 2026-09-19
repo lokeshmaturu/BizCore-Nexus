@@ -28,6 +28,7 @@ import LogisticsPage from '../pages/logistics/LogisticsPage';
 import FinancePage from '../pages/finance/FinancePage';
 import HRPage from '../pages/hr/HRPage';
 import SettingsPage from '../pages/settings/SettingsPage';
+import AutomationPage from '../pages/automation/AutomationPage';
 
 // Error Handlers
 import UnauthorizedPage from '../pages/errors/UnauthorizedPage';
@@ -170,6 +171,21 @@ export const AppRouter = () => {
               }
             >
               <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
+            </Route>
+
+            {/* Autonomous AI Workflows & Intelligence (Phase 6) */}
+            <Route
+              element={
+                <ProtectedRoute
+                  allowedRoles={[
+                    ROLES.SUPER_ADMIN,
+                    ROLES.BRANCH_MANAGER,
+                    ROLES.INVENTORY_MANAGER,
+                  ]}
+                />
+              }
+            >
+              <Route path={ROUTES.AUTOMATION} element={<AutomationPage />} />
             </Route>
 
             {/* Error Handlers Inside Layout */}
