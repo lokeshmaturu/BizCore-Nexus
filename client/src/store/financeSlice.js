@@ -58,6 +58,16 @@ const financeSlice = createSlice({
     clearFinanceError: (state) => {
       state.error = null;
     },
+    updateInvoiceStatus: (state, action) => {
+      const { id, status } = action.payload;
+      const index = state.invoices.findIndex((inv) => inv._id === id || inv.invoiceNumber === id);
+      if (index !== -1) {
+        state.invoices[index].status = status;
+        if (status === 'Paid') {
+          state.invoices[index].balanceDue = 0;
+        }
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -91,5 +101,5 @@ const financeSlice = createSlice({
   },
 });
 
-export const { clearFinanceError } = financeSlice.actions;
+export const { clearFinanceError, updateInvoiceStatus } = financeSlice.actions;
 export default financeSlice.reducer;

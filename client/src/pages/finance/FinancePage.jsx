@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   ArrowUpRight,
   Send,
+  Download,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
@@ -30,6 +31,7 @@ import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { Input } from '../../components/ui/Input';
 import { formatCurrency, formatDate } from '../../utils/formatters';
+import { generateInvoicePDF } from '../../services/pdfService';
 
 export const FinancePage = () => {
   const dispatch = useDispatch();
@@ -305,10 +307,29 @@ export const FinancePage = () => {
                     <Button
                       size="sm"
                       variant="secondary"
+                      leftIcon={Download}
+                      onClick={() => {
+                        generateInvoicePDF({
+                          invoiceNumber: inv.invoiceNumber,
+                          customer: inv.customer?.companyName || 'Enterprise Client',
+                          amount: inv.grandTotal,
+                          date: formatDate(inv.issueDate),
+                          dueDate: formatDate(inv.dueDate),
+                          status: inv.status,
+                          items: inv.items?.map(i => ({ name: i.name || i.sku, qty: i.quantity, rate: i.unitPrice, total: i.total })),
+                        });
+                        toast.success(`Exported ${inv.invoiceNumber} as official PDF!`);
+                      }}
+                    >
+                      Export PDF
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="secondary"
                       leftIcon={Printer}
                       onClick={() => setSelectedPrintInvoice(inv)}
                     >
-                      Print Invoice
+                      Print
                     </Button>
                     {inv.balanceDue > 0 && (
                       <Button

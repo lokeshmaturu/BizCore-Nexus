@@ -15,6 +15,8 @@ import financeReducer from './financeSlice';
 import aiReducer from './aiSlice';
 import notificationReducer from './notificationSlice';
 import settingsReducer from './settingsSlice';
+import currencyReducer from './currencySlice';
+import auditReducer from './auditSlice';
 
 export const store = configureStore({
   reducer: {
@@ -30,6 +32,8 @@ export const store = configureStore({
     ai: aiReducer,
     notifications: notificationReducer,
     settings: settingsReducer,
+    currency: currencyReducer,
+    audit: auditReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -15,6 +15,7 @@ import {
   Boxes,
   AlertTriangle,
   RefreshCw,
+  Download,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
@@ -32,6 +33,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
 import { Input } from '../../components/ui/Input';
 import { formatCurrency, formatDate } from '../../utils/formatters';
+import { generatePurchaseOrderPDF } from '../../services/pdfService';
 
 export const ProcurementPage = () => {
   const dispatch = useDispatch();
@@ -268,6 +270,24 @@ export const ProcurementPage = () => {
 
                 {/* Actions */}
                 <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    leftIcon={Download}
+                    onClick={() => {
+                      generatePurchaseOrderPDF({
+                        poNumber: po.poNumber,
+                        vendor: po.supplier?.name || 'Approved OEM Vendor',
+                        item: po.items?.map(i => i.name).join(', ') || 'Wholesale Part',
+                        quantity: po.items?.reduce((acc, i) => acc + (i.quantity || 0), 0) || 100,
+                        totalAmount: po.totalAmount,
+                        expectedDate: formatDate(po.expectedDeliveryDate),
+                      });
+                      toast.success(`Exported ${po.poNumber} as official PDF!`);
+                    }}
+                  >
+                    PO PDF
+                  </Button>
                   {po.status === 'Issued' && (
                     <Button
                       size="sm"

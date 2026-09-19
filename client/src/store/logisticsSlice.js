@@ -58,6 +58,22 @@ const logisticsSlice = createSlice({
     clearLogisticsError: (state) => {
       state.error = null;
     },
+    addDispatch: (state, action) => {
+      const newShipment = {
+        _id: action.payload.id || `WB-${Date.now()}`,
+        trackingNumber: action.payload.trackingNumber || `TRK-${Date.now().toString().slice(-6)}`,
+        carrier: action.payload.carrier || 'Nexus Fleet Transit',
+        serviceLevel: action.payload.serviceLevel || 'Standard Ground',
+        driverName: action.payload.driverName || 'Alex Vance',
+        vehicleNumber: action.payload.vehicleNumber || 'NX-402',
+        totalWeightKg: action.payload.totalWeightKg || 1200,
+        status: action.payload.status || 'In Transit',
+        originBranch: 'Central Hub Alpha',
+        destinationAddress: { city: 'Regional Hub Beta' },
+        createdAt: new Date().toISOString(),
+      };
+      state.shipments.unshift(newShipment);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -90,5 +106,5 @@ const logisticsSlice = createSlice({
   },
 });
 
-export const { clearLogisticsError } = logisticsSlice.actions;
+export const { clearLogisticsError, addDispatch } = logisticsSlice.actions;
 export default logisticsSlice.reducer;

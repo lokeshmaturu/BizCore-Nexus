@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   Send,
   Navigation,
+  Download,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
@@ -30,6 +31,7 @@ import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { Input } from '../../components/ui/Input';
 import { formatDate } from '../../utils/formatters';
+import { generateWaybillPDF } from '../../services/pdfService';
 
 export const LogisticsPage = () => {
   const dispatch = useDispatch();
@@ -212,10 +214,32 @@ export const LogisticsPage = () => {
                   <Button
                     size="sm"
                     variant="secondary"
+                    leftIcon={Download}
+                    onClick={() => {
+                      generateWaybillPDF({
+                        trackingNumber: shipment.trackingNumber,
+                        origin: shipment.originBranch || 'Central Hub Alpha',
+                        destination: shipment.customer?.companyName || 'Regional Hub Beta',
+                        carrier: shipment.carrier,
+                        driver: `${shipment.driverName} (${shipment.vehicleNumber})`,
+                        cargo: 'Palletized Electronic Components',
+                        packages: `${shipment.totalPackages || 12} Pallets`,
+                        weight: `${shipment.totalWeightKg || 1200} kg`,
+                        status: shipment.status,
+                        eta: formatDate(shipment.estimatedDelivery),
+                      });
+                      toast.success(`Exported Waybill ${shipment.trackingNumber} as official PDF!`);
+                    }}
+                  >
+                    Waybill PDF
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
                     leftIcon={Printer}
                     onClick={() => setSelectedWaybill(shipment)}
                   >
-                    View Waybill
+                    View
                   </Button>
 
                   {shipment.status === 'Preparing' && (

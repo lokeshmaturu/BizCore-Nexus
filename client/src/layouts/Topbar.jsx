@@ -21,12 +21,14 @@ import { toggleCopilot } from '../store/aiSlice';
 import { ROUTES } from '../constants/routes';
 import { Avatar } from '../components/ui/Avatar';
 import { Badge } from '../components/ui/Badge';
+import { setCurrency, CURRENCIES } from '../store/currencySlice';
 
 export const Topbar = ({ onOpenMobileSidebar }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, fullName, role, email, companyName, branch } = useAuth();
   const { unreadCount } = useSelector((state) => state.notifications);
+  const activeCurrency = useSelector((state) => state.currency?.activeCurrency || 'USD');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -90,6 +92,26 @@ export const Topbar = ({ onOpenMobileSidebar }) => {
             Ctrl+J
           </span>
         </button>
+
+        {/* Multi-Currency Global Switcher (Phase 5) */}
+        <div className="flex items-center bg-slate-900/90 border border-slate-700/60 rounded-xl px-2 py-1">
+          <span className="text-[11px] font-mono font-bold text-brand-400 mr-1.5 hidden sm:inline">FX:</span>
+          <select
+            value={activeCurrency}
+            onChange={(e) => {
+              dispatch(setCurrency(e.target.value));
+              toast.success(`Display Currency updated to ${e.target.value}`);
+            }}
+            className="bg-transparent text-xs font-bold text-slate-200 focus:outline-none cursor-pointer"
+            title="Global Multi-Currency Engine"
+          >
+            {Object.values(CURRENCIES).map((curr) => (
+              <option key={curr.code} value={curr.code} className="bg-slate-900 text-slate-200">
+                {curr.code} ({curr.symbol})
+              </option>
+            ))}
+          </select>
+        </div>
 
         {/* Branch / Company Tag */}
         <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300">

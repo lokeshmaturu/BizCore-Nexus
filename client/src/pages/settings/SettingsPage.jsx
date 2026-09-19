@@ -17,11 +17,13 @@ import {
   Plus,
   Send,
   Zap,
-  Activity,
-  FileSpreadsheet,
   Layers,
   RefreshCw,
   Code,
+  Radio,
+  FileCheck2,
+  AlertTriangle,
+  History,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { PageTitle } from '../../components/common/PageTitle';
@@ -41,6 +43,8 @@ import {
   updateSystemConfig,
   clearPingResult,
 } from '../../store/settingsSlice';
+import { setFilterSeverity, setSearchTerm as setAuditSearchTerm, clearAuditLogs } from '../../store/auditSlice';
+import { SIMULATION_EVENTS } from '../../services/socketSimulator';
 import settingsService from '../../services/settingsService';
 
 export const SettingsPage = () => {
@@ -49,8 +53,11 @@ export const SettingsPage = () => {
   const { branches, webhooks, config, lastPingResult, isLoading } = useSelector(
     (state) => state.settings
   );
+  const { logs: auditLogs, filterSeverity, searchTerm: auditSearch } = useSelector(
+    (state) => state.audit || { logs: [], filterSeverity: 'ALL', searchTerm: '' }
+  );
 
-  const [activeTab, setActiveTab] = useState('branches'); // 'branches' | 'webhooks' | 'security' | 'exports'
+  const [activeTab, setActiveTab] = useState('branches'); // 'branches' | 'webhooks' | 'audit' | 'simulation' | 'security' | 'exports'
   const [isBranchModalOpen, setIsBranchModalOpen] = useState(false);
   const [isWebhookModalOpen, setIsWebhookModalOpen] = useState(false);
 
@@ -207,6 +214,28 @@ export const SettingsPage = () => {
           }`}
         >
           Developer Webhooks ({webhooks.length})
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('audit')}
+          className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+            activeTab === 'audit'
+              ? 'bg-brand-600 text-white shadow-md'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          Security Audit Trail ({auditLogs.length})
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('simulation')}
+          className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+            activeTab === 'simulation'
+              ? 'bg-brand-600 text-white shadow-md'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          Real-Time Event Simulator
         </button>
         <button
           type="button"
@@ -377,6 +406,181 @@ export const SettingsPage = () => {
               </pre>
             </div>
           )}
+        </div>
+      )}
+
+      {/* 3. Security Audit Trail Tab (Phase 5) */}
+      {activeTab === 'audit' && (
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-base font-bold text-white flex items-center gap-2">
+                <History className="w-4 h-4 text-brand-400" />
+                <span>Immutable Security Audit Log</span>
+              </h2>
+              <p className="text-xs text-slate-400">
+                Cryptographic tamper-evident activity ledger tracking all system and role actions.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                variant="secondary"
+                leftIcon={Download}
+                onClick={() => {
+                  const headers = 'ID,Timestamp,Actor,Role,Action,Resource,IP,Severity,Details\n';
+                  const rows = auditLogs
+                    .map(
+                      (l) =>
+                        `"${l.id}","${l.timestamp}","${l.actor}","${l.actorRole}","${l.action}","${l.resource}","${l.ipAddress}","${l.severity}","${l.details}"`
+                    )
+                    .join('\n');
+                  const blob = new Blob([headers + rows], { type: 'text/csv' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `AuditTrail_${Date.now()}.csv`;
+                  a.click();
+                  toast.success('Downloaded complete Audit Trail CSV!');
+                }}
+              >
+                Export Audit CSV
+              </Button>
+            </div>
+          </div>
+
+          {/* Severity Filters & Search */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 rounded-2xl bg-slate-950/80 border border-slate-800">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {['ALL', 'INFO', 'WARNING', 'CRITICAL'].map((sev) => (
+                <button
+                  key={sev}
+                  onClick={() => dispatch(setFilterSeverity(sev))}
+                  className={`px-3 py-1 rounded-xl text-xs font-bold transition-all ${
+                    filterSeverity === sev
+                      ? 'bg-brand-600 text-white shadow-sm'
+                      : 'text-slate-400 hover:text-white bg-slate-900/60'
+                  }`}
+                >
+                  {sev}
+                </button>
+              ))}
+            </div>
+
+            <input
+              type="text"
+              value={auditSearch}
+              onChange={(e) => dispatch(setAuditSearchTerm(e.target.value))}
+              placeholder="Search actor, action, or resource..."
+              className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 w-full sm:w-64"
+            />
+          </div>
+
+          {/* Audit Logs Table / Stream */}
+          <div className="space-y-2.5">
+            {auditLogs
+              .filter((log) => {
+                const matchesSev =
+                  filterSeverity === 'ALL' || log.severity?.toUpperCase() === filterSeverity;
+                const matchesText =
+                  !auditSearch ||
+                  log.actor?.toLowerCase().includes(auditSearch.toLowerCase()) ||
+                  log.action?.toLowerCase().includes(auditSearch.toLowerCase()) ||
+                  log.resource?.toLowerCase().includes(auditSearch.toLowerCase()) ||
+                  log.details?.toLowerCase().includes(auditSearch.toLowerCase());
+                return matchesSev && matchesText;
+              })
+              .map((log) => (
+                <Card
+                  key={log.id}
+                  className="p-4 border-slate-850 bg-slate-900/70 hover:border-slate-750 transition-all space-y-2"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5">
+                      <span className="font-mono text-xs font-bold text-slate-400">{log.id}</span>
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                          log.severity === 'critical'
+                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                            : log.severity === 'warning'
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                            : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                        }`}
+                      >
+                        {log.severity}
+                      </span>
+                      <span className="font-mono text-xs font-bold text-brand-300">
+                        {log.action}
+                      </span>
+                    </div>
+
+                    <div className="text-[11px] text-slate-400 font-mono">
+                      {new Date(log.timestamp).toLocaleString()} • IP: {log.ipAddress}
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-slate-200">{log.details}</p>
+
+                  <div className="flex items-center gap-4 text-[11px] text-slate-400 pt-1 border-t border-slate-800/80">
+                    <div>
+                      Actor: <span className="text-slate-200 font-semibold">{log.actor}</span> (
+                      <span className="text-brand-400">{log.actorRole}</span>)
+                    </div>
+                    <div>
+                      Resource: <span className="font-mono text-slate-300">{log.resource}</span>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+          </div>
+        </div>
+      )}
+
+      {/* 4. Real-Time Event Simulation Tab (Phase 5) */}
+      {activeTab === 'simulation' && (
+        <div className="space-y-6">
+          <div className="border-b border-slate-800 pb-4">
+            <h2 className="text-base font-bold text-white flex items-center gap-2">
+              <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
+              <span>Real-Time WebSocket & Event Dispatch Simulator</span>
+            </h2>
+            <p className="text-xs text-slate-400">
+              Trigger instant multi-client telemetry events across Sales, Inventory, Logistics, and Treasury feeds.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {SIMULATION_EVENTS.map((sim) => (
+              <Card
+                key={sim.id}
+                className="p-5 border-slate-800 bg-slate-900/70 hover:border-brand-500/40 transition-all flex flex-col justify-between space-y-4"
+              >
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">
+                      {sim.category}
+                    </span>
+                    <Zap className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <h3 className="text-sm font-bold text-white">{sim.title}</h3>
+                  <p className="text-xs text-slate-400">{sim.description}</p>
+                </div>
+
+                <Button
+                  size="sm"
+                  leftIcon={Send}
+                  onClick={() => {
+                    sim.trigger(dispatch, user);
+                    toast.success(`Dispatched simulated event: "${sim.title}"!`);
+                  }}
+                  className="w-full bg-brand-600 hover:bg-brand-500"
+                >
+                  Fire Simulation Event
+                </Button>
+              </Card>
+            ))}
+          </div>
         </div>
       )}
 

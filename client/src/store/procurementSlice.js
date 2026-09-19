@@ -81,6 +81,20 @@ const procurementSlice = createSlice({
     clearProcurementError: (state) => {
       state.error = null;
     },
+    addPurchaseOrder: (state, action) => {
+      const newPO = {
+        _id: action.payload.id || `PO-${Date.now()}`,
+        poNumber: action.payload.id || `PO-2026-${Math.floor(100 + Math.random() * 900)}`,
+        supplier: { name: action.payload.vendor || 'Supplier' },
+        items: [{ name: action.payload.item || 'SKU', quantity: action.payload.quantity || 100 }],
+        totalAmount: action.payload.totalAmount || 10000,
+        status: action.payload.status || 'Issued',
+        destinationBranch: 'Main Central Hub',
+        expectedDeliveryDate: action.payload.expectedDate || new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+      };
+      state.orders.unshift(newPO);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -139,5 +153,5 @@ const procurementSlice = createSlice({
   },
 });
 
-export const { clearProcurementError } = procurementSlice.actions;
+export const { clearProcurementError, addPurchaseOrder } = procurementSlice.actions;
 export default procurementSlice.reducer;
