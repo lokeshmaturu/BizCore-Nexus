@@ -42,8 +42,18 @@ export const SalesPage = () => {
   const { customers, orders, isLoading } = useSelector((state) => state.sales);
   const { products } = useSelector((state) => state.inventory);
 
-  const [activeTab, setActiveTab] = useState('orders'); // 'orders' or 'customers'
+  const [activeTab, setActiveTab] = useState('pipeline'); // 'pipeline' | 'orders' | 'customers'
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Kanban Pipeline State
+  const [pipelineDeals, setPipelineDeals] = useState([
+    { id: 'DEAL-101', client: 'Apex Electronics Corp', value: 85000, stage: 'Qualified', priority: 'High', owner: 'Sarah M.', closeDate: 'Oct 15' },
+    { id: 'DEAL-102', client: 'Horizon Retail Network', value: 142000, stage: 'Proposal', priority: 'Urgent', owner: 'David K.', closeDate: 'Oct 22' },
+    { id: 'DEAL-103', client: 'Quantum Hardware Ltd', value: 48000, stage: 'Negotiation', priority: 'Medium', owner: 'Alex R.', closeDate: 'Nov 02' },
+    { id: 'DEAL-104', client: 'Nexus Tech Global', value: 210000, stage: 'Won', priority: 'High', owner: 'Elena V.', closeDate: 'Won Today' },
+    { id: 'DEAL-105', client: 'Pinnacle Semiconductors', value: 65000, stage: 'Lead', priority: 'Low', owner: 'Sarah M.', closeDate: 'Nov 18' },
+    { id: 'DEAL-106', client: 'Cyberdyne Systems OEM', value: 92000, stage: 'Proposal', priority: 'High', owner: 'David K.', closeDate: 'Oct 28' },
+  ]);
 
   // Modals
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
@@ -231,7 +241,20 @@ export const SalesPage = () => {
       {/* Tabs and Search Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 glass-panel p-3 rounded-2xl border border-slate-800">
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-950/60 rounded-xl border border-slate-800/80 w-full sm:w-auto">
+        <div className="flex items-center gap-1.5 p-1 bg-slate-950/60 rounded-xl border border-slate-800/80 w-full sm:w-auto flex-wrap">
+          <button
+            type="button"
+            onClick={() => setActiveTab('pipeline')}
+            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 ${
+              activeTab === 'pipeline'
+                ? 'bg-brand-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <TrendingUp className="w-4 h-4" />
+            <span>CRM Pipeline ({pipelineDeals.length} Deals)</span>
+          </button>
+
           <button
             type="button"
             onClick={() => setActiveTab('orders')}
@@ -272,7 +295,73 @@ export const SalesPage = () => {
         </div>
       </div>
 
-      {/* Tab 1: Orders Pipeline View */}
+      {/* Tab 0: Modern CRM Pipeline Kanban Board (HubSpot / Salesforce Style) */}
+      {activeTab === 'pipeline' && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3.5 overflow-x-auto pb-4">
+            {['Lead', 'Qualified', 'Proposal', 'Negotiation', 'Won', 'Lost'].map((stage) => {
+              const dealsInStage = pipelineDeals.filter((d) => d.stage === stage);
+              const stageTotal = dealsInStage.reduce((acc, d) => acc + d.value, 0);
+
+              return (
+                <div
+                  key={stage}
+                  className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-3 flex flex-col gap-3 min-w-[200px]"
+                >
+                  {/* Column Header */}
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-800/60">
+                    <div>
+                      <span className="text-xs font-bold text-slate-200">{stage}</span>
+                      <span className="text-[10px] text-slate-500 font-mono block">
+                        {formatCurrency(stageTotal)}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">
+                      {dealsInStage.length}
+                    </span>
+                  </div>
+
+                  {/* Deals Cards */}
+                  <div className="space-y-2.5 flex-1 min-h-[160px]">
+                    {dealsInStage.map((deal) => (
+                      <motion.div
+                        key={deal.id}
+                        layout
+                        whileHover={{ scale: 1.02 }}
+                        className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-brand-500/50 shadow-sm transition-all space-y-2 cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between text-[10px]">
+                          <span className="font-mono text-brand-400 font-bold">{deal.id}</span>
+                          <span
+                            className={`px-1.5 py-0.5 rounded font-semibold ${
+                              deal.priority === 'Urgent'
+                                ? 'bg-rose-500/20 text-rose-300'
+                                : deal.priority === 'High'
+                                ? 'bg-amber-500/20 text-amber-300'
+                                : 'bg-blue-500/20 text-blue-300'
+                            }`}
+                          >
+                            {deal.priority}
+                          </span>
+                        </div>
+
+                        <p className="text-xs font-bold text-white leading-tight">{deal.client}</p>
+
+                        <div className="flex items-center justify-between pt-1 border-t border-slate-800/60 text-[11px]">
+                          <span className="font-mono font-bold text-emerald-400">
+                            {formatCurrency(deal.value)}
+                          </span>
+                          <span className="text-slate-400">{deal.owner}</span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
       {activeTab === 'orders' && (
         <div className="glass-panel rounded-2xl border border-slate-800 overflow-hidden">
           {isLoading ? (

@@ -44,6 +44,7 @@ import { addOrder } from '../../store/salesSlice';
 import { fetchProducts } from '../../store/inventorySlice';
 import { fetchCustomers } from '../../store/salesSlice';
 import { formatCurrency, formatDate } from '../../utils/formatters';
+import BusinessHealthScore from '../../components/dashboard/BusinessHealthScore';
 
 export const DashboardPage = () => {
   const dispatch = useDispatch();
@@ -300,7 +301,10 @@ export const DashboardPage = () => {
         })}
       </div>
 
-      {/* 3. AI Predictive Demand Forecast Widget */}
+      {/* 3. Flagship Business Health Score Widget (Linear + Stripe Style) */}
+      <BusinessHealthScore score={87} />
+
+      {/* 4. AI Predictive Demand Forecast & CEO Cockpit Recommendations */}
       {aiForecast && aiForecast.recommendations?.length > 0 && (
         <div className="glass-panel p-6 rounded-3xl border border-brand-500/30 relative overflow-hidden">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/80">
