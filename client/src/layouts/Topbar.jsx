@@ -154,6 +154,17 @@ export const Topbar = ({ onOpenMobileSidebar }) => {
                   <span>Profile Settings</span>
                 </Link>
 
+                {(role === 'SuperAdmin' || role === 'BranchManager') && (
+                  <Link
+                    to={ROUTES.SETTINGS}
+                    onClick={() => setIsDropdownOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-brand-400" />
+                    <span>System Settings</span>
+                  </Link>
+                )}
+
                 <div className="px-4 py-2 text-[11px] text-slate-400 flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />

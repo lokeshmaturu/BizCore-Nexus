@@ -67,14 +67,110 @@ export const AppRouter = () => {
               <Route path={ROUTES.USERS} element={<UsersPage />} />
             </Route>
 
-            {/* Phase 2 & 3 Operational Enterprise Modules */}
-            <Route path={ROUTES.INVENTORY} element={<InventoryPage />} />
-            <Route path={ROUTES.SALES} element={<SalesPage />} />
-            <Route path={ROUTES.PROCUREMENT} element={<ProcurementPage />} />
-            <Route path={ROUTES.LOGISTICS} element={<LogisticsPage />} />
-            <Route path={ROUTES.FINANCE} element={<FinancePage />} />
-            <Route path={ROUTES.HR} element={<HRPage />} />
-            <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
+            {/* Inventory Control & Warehouse Management */}
+            <Route
+              element={
+                <ProtectedRoute
+                  allowedRoles={[
+                    ROLES.SUPER_ADMIN,
+                    ROLES.BRANCH_MANAGER,
+                    ROLES.INVENTORY_MANAGER,
+                  ]}
+                />
+              }
+            >
+              <Route path={ROUTES.INVENTORY} element={<InventoryPage />} />
+            </Route>
+
+            {/* Sales Pipeline & CRM Deals */}
+            <Route
+              element={
+                <ProtectedRoute
+                  allowedRoles={[
+                    ROLES.SUPER_ADMIN,
+                    ROLES.BRANCH_MANAGER,
+                    ROLES.SALES_EXECUTIVE,
+                  ]}
+                />
+              }
+            >
+              <Route path={ROUTES.SALES} element={<SalesPage />} />
+            </Route>
+
+            {/* Procurement & Purchase Orders */}
+            <Route
+              element={
+                <ProtectedRoute
+                  allowedRoles={[
+                    ROLES.SUPER_ADMIN,
+                    ROLES.BRANCH_MANAGER,
+                    ROLES.INVENTORY_MANAGER,
+                  ]}
+                />
+              }
+            >
+              <Route path={ROUTES.PROCUREMENT} element={<ProcurementPage />} />
+            </Route>
+
+            {/* Logistics & Fleet Dispatch */}
+            <Route
+              element={
+                <ProtectedRoute
+                  allowedRoles={[
+                    ROLES.SUPER_ADMIN,
+                    ROLES.BRANCH_MANAGER,
+                    ROLES.INVENTORY_MANAGER,
+                    ROLES.SALES_EXECUTIVE,
+                  ]}
+                />
+              }
+            >
+              <Route path={ROUTES.LOGISTICS} element={<LogisticsPage />} />
+            </Route>
+
+            {/* Finance & Invoicing */}
+            <Route
+              element={
+                <ProtectedRoute
+                  allowedRoles={[
+                    ROLES.SUPER_ADMIN,
+                    ROLES.BRANCH_MANAGER,
+                    ROLES.SALES_EXECUTIVE,
+                  ]}
+                />
+              }
+            >
+              <Route path={ROUTES.FINANCE} element={<FinancePage />} />
+            </Route>
+
+            {/* HR & Personnel Management */}
+            <Route
+              element={
+                <ProtectedRoute
+                  allowedRoles={[
+                    ROLES.SUPER_ADMIN,
+                    ROLES.BRANCH_MANAGER,
+                    ROLES.HR_MANAGER,
+                  ]}
+                />
+              }
+            >
+              <Route path={ROUTES.HR} element={<HRPage />} />
+            </Route>
+
+            {/* Enterprise System Configuration */}
+            <Route
+              element={
+                <ProtectedRoute
+                  allowedRoles={[
+                    ROLES.SUPER_ADMIN,
+                    ROLES.BRANCH_MANAGER,
+                  ]}
+                />
+              }
+            >
+              <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
+            </Route>
 
             {/* Error Handlers Inside Layout */}
             <Route path={ROUTES.UNAUTHORIZED} element={<UnauthorizedPage />} />
