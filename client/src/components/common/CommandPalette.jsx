@@ -133,6 +133,14 @@ export const CommandPalette = () => {
       shortcut: 'G A',
     },
     {
+      id: 'nav-telemetry',
+      title: 'Go to System Telemetry & Cluster Health',
+      category: 'NAVIGATION',
+      icon: Radio,
+      action: () => navigate(ROUTES.SYSTEM_HEALTH),
+      shortcut: 'G T',
+    },
+    {
       id: 'nav-settings',
       title: 'Go to System & Branch Settings',
       category: 'NAVIGATION',

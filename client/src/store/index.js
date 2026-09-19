@@ -18,6 +18,7 @@ import settingsReducer from './settingsSlice';
 import currencyReducer from './currencySlice';
 import auditReducer from './auditSlice';
 import workflowReducer from './workflowSlice';
+import telemetryReducer from './telemetrySlice';
 
 export const store = configureStore({
   reducer: {
@@ -36,6 +37,7 @@ export const store = configureStore({
     currency: currencyReducer,
     audit: auditReducer,
     workflow: workflowReducer,
+    telemetry: telemetryReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

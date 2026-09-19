@@ -17,6 +17,7 @@ import {
   ShoppingCart,
   Truck,
   Receipt,
+  Activity,
 } from 'lucide-react';
 import { ROUTES } from '../constants/routes';
 import { useAuth } from '../hooks/useAuth';
@@ -37,6 +38,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
     canManageFinance,
     canManageSettings,
     canManageAutomation,
+    canViewSystemHealth,
   } = usePermission();
 
   // Navigation Items defined with RBAC permissions
@@ -97,6 +99,13 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
       icon: Sparkles,
       allowed: canManageAutomation,
       badge: 'v6.0',
+    },
+    {
+      label: 'System Telemetry',
+      path: ROUTES.SYSTEM_HEALTH,
+      icon: Activity,
+      allowed: canViewSystemHealth,
+      badge: 'Live',
     },
     {
       label: 'System Settings',

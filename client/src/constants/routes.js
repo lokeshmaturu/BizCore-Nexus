@@ -23,6 +23,7 @@ export const ROUTES = {
   HR: '/hr',
   SETTINGS: '/settings',
   AUTOMATION: '/automation',
+  SYSTEM_HEALTH: '/system-health',
 
   // Error Pages
   UNAUTHORIZED: '/unauthorized',

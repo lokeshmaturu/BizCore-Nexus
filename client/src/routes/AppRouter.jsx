@@ -29,6 +29,7 @@ import FinancePage from '../pages/finance/FinancePage';
 import HRPage from '../pages/hr/HRPage';
 import SettingsPage from '../pages/settings/SettingsPage';
 import AutomationPage from '../pages/automation/AutomationPage';
+import SystemHealthPage from '../pages/telemetry/SystemHealthPage';
 
 // Error Handlers
 import UnauthorizedPage from '../pages/errors/UnauthorizedPage';
@@ -186,6 +187,20 @@ export const AppRouter = () => {
               }
             >
               <Route path={ROUTES.AUTOMATION} element={<AutomationPage />} />
+            </Route>
+
+            {/* System Telemetry & Cluster Health (Phase 7) */}
+            <Route
+              element={
+                <ProtectedRoute
+                  allowedRoles={[
+                    ROLES.SUPER_ADMIN,
+                    ROLES.BRANCH_MANAGER,
+                  ]}
+                />
+              }
+            >
+              <Route path={ROUTES.SYSTEM_HEALTH} element={<SystemHealthPage />} />
             </Route>
 
             {/* Error Handlers Inside Layout */}
