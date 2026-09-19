@@ -19,9 +19,12 @@ import DashboardPage from '../pages/dashboard/DashboardPage';
 import ProfilePage from '../pages/profile/ProfilePage';
 import UsersPage from '../pages/users/UsersPage';
 
-// Phase 2 Enterprise Module Pages
+// Phase 2 & 3 Enterprise Module Pages
 import InventoryPage from '../pages/inventory/InventoryPage';
 import SalesPage from '../pages/sales/SalesPage';
+import ProcurementPage from '../pages/procurement/ProcurementPage';
+import LogisticsPage from '../pages/logistics/LogisticsPage';
+import FinancePage from '../pages/finance/FinancePage';
 import HRPage from '../pages/hr/HRPage';
 import SettingsPage from '../pages/settings/SettingsPage';
 
@@ -63,9 +66,12 @@ export const AppRouter = () => {
               <Route path={ROUTES.USERS} element={<UsersPage />} />
             </Route>
 
-            {/* Phase 2 Operational Enterprise Modules */}
+            {/* Phase 2 & 3 Operational Enterprise Modules */}
             <Route path={ROUTES.INVENTORY} element={<InventoryPage />} />
             <Route path={ROUTES.SALES} element={<SalesPage />} />
+            <Route path={ROUTES.PROCUREMENT} element={<ProcurementPage />} />
+            <Route path={ROUTES.LOGISTICS} element={<LogisticsPage />} />
+            <Route path={ROUTES.FINANCE} element={<FinancePage />} />
             <Route path={ROUTES.HR} element={<HRPage />} />
             <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
 

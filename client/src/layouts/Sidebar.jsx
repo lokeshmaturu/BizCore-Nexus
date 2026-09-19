@@ -14,6 +14,9 @@ import {
   ChevronRight,
   Layers,
   Sparkles,
+  ShoppingCart,
+  Truck,
+  Receipt,
 } from 'lucide-react';
 import { ROUTES } from '../constants/routes';
 import { useAuth } from '../hooks/useAuth';
@@ -24,7 +27,15 @@ import { ROLES } from '../constants/roles';
 export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) => {
   const location = useLocation();
   const { user, role } = useAuth();
-  const { canManageUsers, canManageInventory, canManageSales, canManageHR } = usePermission();
+  const {
+    canManageUsers,
+    canManageInventory,
+    canManageSales,
+    canManageHR,
+    canManageProcurement,
+    canManageLogistics,
+    canManageFinance,
+  } = usePermission();
 
   // Navigation Items defined with RBAC permissions
   const navItems = [
@@ -52,6 +63,25 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobile
       path: ROUTES.SALES,
       icon: TrendingUp,
       allowed: canManageSales,
+    },
+    {
+      label: 'Procurement & POs',
+      path: ROUTES.PROCUREMENT,
+      icon: ShoppingCart,
+      allowed: canManageProcurement,
+      badge: 'AI',
+    },
+    {
+      label: 'Logistics & Dispatch',
+      path: ROUTES.LOGISTICS,
+      icon: Truck,
+      allowed: canManageLogistics,
+    },
+    {
+      label: 'Finance & Billing',
+      path: ROUTES.FINANCE,
+      icon: Receipt,
+      allowed: canManageFinance,
     },
     {
       label: 'HR & Personnel',

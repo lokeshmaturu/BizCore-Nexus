@@ -9,6 +9,11 @@ import inventoryReducer from './inventorySlice';
 import salesReducer from './salesSlice';
 import hrReducer from './hrSlice';
 import analyticsReducer from './analyticsSlice';
+import procurementReducer from './procurementSlice';
+import logisticsReducer from './logisticsSlice';
+import financeReducer from './financeSlice';
+import aiReducer from './aiSlice';
+import notificationReducer from './notificationSlice';
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +23,11 @@ export const store = configureStore({
     sales: salesReducer,
     hr: hrReducer,
     analytics: analyticsReducer,
+    procurement: procurementReducer,
+    logistics: logisticsReducer,
+    finance: financeReducer,
+    ai: aiReducer,
+    notifications: notificationReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

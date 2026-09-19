@@ -33,6 +33,9 @@ export const usePermission = () => {
   const canManageInventory = hasRole(ROLES.SUPER_ADMIN, ROLES.INVENTORY_MANAGER, ROLES.BRANCH_MANAGER);
   const canManageSales = hasRole(ROLES.SUPER_ADMIN, ROLES.SALES_EXECUTIVE, ROLES.BRANCH_MANAGER);
   const canManageHR = hasRole(ROLES.SUPER_ADMIN, ROLES.HR_MANAGER);
+  const canManageProcurement = hasRole(ROLES.SUPER_ADMIN, ROLES.INVENTORY_MANAGER, ROLES.BRANCH_MANAGER);
+  const canManageLogistics = hasRole(ROLES.SUPER_ADMIN, ROLES.INVENTORY_MANAGER, ROLES.BRANCH_MANAGER, ROLES.SALES_EXECUTIVE);
+  const canManageFinance = hasRole(ROLES.SUPER_ADMIN, ROLES.BRANCH_MANAGER, ROLES.SALES_EXECUTIVE);
 
   return {
     role,
@@ -47,6 +50,9 @@ export const usePermission = () => {
     canManageInventory,
     canManageSales,
     canManageHR,
+    canManageProcurement,
+    canManageLogistics,
+    canManageFinance,
   };
 };
 

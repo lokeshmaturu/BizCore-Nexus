@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Menu,
   Bell,
@@ -11,10 +11,13 @@ import {
   Building2,
   ChevronDown,
   Sparkles,
+  BrainCircuit,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../hooks/useAuth';
 import { logoutUser } from '../store/authSlice';
+import { toggleNotificationDrawer } from '../store/notificationSlice';
+import { toggleCopilot } from '../store/aiSlice';
 import { ROUTES } from '../constants/routes';
 import { Avatar } from '../components/ui/Avatar';
 import { Badge } from '../components/ui/Badge';
@@ -23,6 +26,7 @@ export const Topbar = ({ onOpenMobileSidebar }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, fullName, role, email, companyName, branch } = useAuth();
+  const { unreadCount } = useSelector((state) => state.notifications);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -71,9 +75,23 @@ export const Topbar = ({ onOpenMobileSidebar }) => {
         </div>
       </div>
 
-      {/* Right: Branch Info, Notifications & User Dropdown */}
-      <div className="flex items-center gap-3">
-        {/* Branch / Company Tag (Hidden on small mobile) */}
+      {/* Right: Copilot Button, Branch Info, Notifications & User Dropdown */}
+      <div className="flex items-center gap-2.5 sm:gap-3">
+        {/* Nexus AI Copilot Pill */}
+        <button
+          type="button"
+          onClick={() => dispatch(toggleCopilot())}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-brand-600/20 to-indigo-600/20 border border-brand-500/30 text-brand-300 hover:bg-brand-500/30 text-xs font-semibold shadow-sm transition-all"
+          title="Open Nexus AI Copilot (Ctrl + J)"
+        >
+          <BrainCircuit className="w-3.5 h-3.5 text-brand-400" />
+          <span className="hidden sm:inline">Nexus Copilot</span>
+          <span className="text-[10px] bg-slate-950/60 px-1.5 py-0.2 rounded border border-brand-500/20 hidden md:inline">
+            Ctrl+J
+          </span>
+        </button>
+
+        {/* Branch / Company Tag */}
         <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300">
           <Building2 className="w-3.5 h-3.5 text-brand-400" />
           <span className="font-medium text-slate-200">{companyName || 'Enterprise'}</span>
@@ -84,11 +102,16 @@ export const Topbar = ({ onOpenMobileSidebar }) => {
         {/* Notifications */}
         <button
           type="button"
+          onClick={() => dispatch(toggleNotificationDrawer())}
           className="relative p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-900 transition-colors border border-transparent hover:border-slate-800"
           title="Notifications"
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brand-500 ring-2 ring-slate-950" />
+          {unreadCount > 0 && (
+            <span className="absolute top-1.5 right-1.5 min-w-[8px] h-2 px-1 rounded-full bg-rose-500 text-[9px] font-bold text-white flex items-center justify-center ring-2 ring-slate-950">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
         </button>
 
         {/* User Profile Menu */}

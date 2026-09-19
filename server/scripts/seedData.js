@@ -1,15 +1,24 @@
 /**
  * Enterprise Database Seeder
- * Populates realistic wholesale inventory SKUs, B2B clients, employee records, and orders.
+ * Populates realistic wholesale inventory SKUs, B2B clients, employee records,
+ * suppliers, purchase orders, shipments, invoices, transactions, and notifications.
  */
 
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const mongoose = require('mongoose');
 const Product = require('../models/Product');
 const Customer = require('../models/Customer');
 const Order = require('../models/Order');
 const EmployeeRecord = require('../models/EmployeeRecord');
 const StockMovement = require('../models/StockMovement');
+const Supplier = require('../models/Supplier');
+const PurchaseOrder = require('../models/PurchaseOrder');
+const Shipment = require('../models/Shipment');
+const Invoice = require('../models/Invoice');
+const PaymentTransaction = require('../models/PaymentTransaction');
+const Notification = require('../models/Notification');
+const AuditLog = require('../models/AuditLog');
 const User = require('../models/User');
 
 const seedProducts = [
@@ -76,246 +85,346 @@ const seedProducts = [
     barcode: '8901234567894',
     costPrice: 2200,
     sellingPrice: 3400,
-    currentStock: 6,
+    currentStock: 5,
     reorderPoint: 8,
     unitOfMeasure: 'PCS',
-    warehouseBin: 'Zone B - Bin 05',
+    warehouseBin: 'Zone B - Bin 14',
     branch: 'Main Distribution Hub',
-    description: 'High-torque hydraulic pressure system for manufacturing plants.',
+    description: '350 Bar continuous pressure heavy industrial fluid pump.',
   },
   {
-    sku: 'AUTO-PLC-CORE',
-    name: 'Industrial Modular PLC Controller Master Node',
-    category: 'Automation Components',
+    sku: 'LOG-PAL-WOOD',
+    name: 'Heat-Treated Euro Spec Export Pallets (Bundle 50)',
+    category: 'Packaging Materials',
     barcode: '8901234567895',
-    costPrice: 1800,
-    sellingPrice: 2650,
-    currentStock: 34,
-    reorderPoint: 15,
-    unitOfMeasure: 'PCS',
-    warehouseBin: 'Zone C - Bin 02',
-    branch: 'West Coast Node',
-    description: 'Deterministic real-time Ethernet industrial automation bus controller.',
+    costPrice: 600,
+    sellingPrice: 950,
+    currentStock: 250,
+    reorderPoint: 50,
+    unitOfMeasure: 'PALLET',
+    warehouseBin: 'Zone C - Yard 01',
+    branch: 'Main Distribution Hub',
+    description: 'ISPM-15 certified stamped standard euro distribution pallets.',
   },
   {
-    sku: 'PKG-PLT-WRAP',
-    name: 'Industrial Stretch Film Wrap 500mm x 1500m (Pallet of 40)',
+    sku: 'LOG-STR-WRAP',
+    name: 'Cast Stretch Wrap Film 80 Gauge (Bulk Pallet 48 Rolls)',
     category: 'Packaging Materials',
     barcode: '8901234567896',
-    costPrice: 650,
+    costPrice: 580,
     sellingPrice: 980,
-    currentStock: 85,
+    currentStock: 80,
     reorderPoint: 25,
     unitOfMeasure: 'PALLET',
-    warehouseBin: 'Zone D - Bin 01',
-    branch: 'Main Distribution Hub',
-    description: 'Puncture-resistant high-tensile automated wrapping film.',
+    warehouseBin: 'Zone C - Bin 09',
+    branch: 'East Coast Hub',
+    description: 'Industrial strength puncture-resistant automated stretch film.',
   },
   {
-    sku: 'BLK-OIL-SYN',
-    name: 'Full Synthetic Industrial Lubricant ISO 68 (208L Drum)',
-    category: 'Bulk Consumer Goods',
+    sku: 'AUT-ROB-ARM',
+    name: '6-Axis High-Precision Articulated Robotic Arm',
+    category: 'Industrial Hardware',
     barcode: '8901234567897',
-    costPrice: 420,
-    sellingPrice: 690,
-    currentStock: 65,
-    reorderPoint: 20,
-    unitOfMeasure: 'CARTON',
-    warehouseBin: 'Zone D - Bin 14',
-    branch: 'East Coast Hub',
-    description: 'Heavy machinery lubricating oil for continuous distribution lines.',
+    costPrice: 18500,
+    sellingPrice: 26500,
+    currentStock: 4,
+    reorderPoint: 5,
+    unitOfMeasure: 'PCS',
+    warehouseBin: 'Zone D - High Bay 02',
+    branch: 'Main Distribution Hub',
+    description: 'Payload capacity 20kg with IP67 washdown rating controller.',
   },
 ];
 
 const seedCustomers = [
   {
-    companyName: 'Metropolis Logistics Inc.',
-    contactPerson: 'David Sterling',
-    email: 'd.sterling@metropolislogistics.com',
-    phone: '+1 (555) 234-8901',
+    companyName: 'Apex Robotics International Inc.',
+    contactPerson: 'Sarah Jenkins',
+    email: 'sjenkins@apexrobotics.io',
+    phone: '+1 (415) 890-2341',
+    taxId: 'US-TAX-8921849',
     tier: 'Platinum',
     creditLimit: 250000,
-    outstandingBalance: 148500,
-    paymentTerms: 'Net 60',
-    discountPercentage: 8,
-    branch: 'East Coast Hub',
-    status: 'Active',
-  },
-  {
-    companyName: 'Pacific Retail Wholesale',
-    contactPerson: 'Elena Rostova',
-    email: 'elena@pacificretailgroup.com',
-    phone: '+1 (555) 345-9012',
-    tier: 'Gold',
-    creditLimit: 150000,
-    outstandingBalance: 76200,
-    paymentTerms: 'Net 30',
-    discountPercentage: 5,
-    branch: 'Midwest Facility',
-    status: 'Active',
-  },
-  {
-    companyName: 'Summit Distribution Group',
-    contactPerson: 'Arthur Pendelton',
-    email: 'purchasing@summitdistribution.com',
-    phone: '+1 (555) 456-0123',
-    tier: 'Platinum',
-    creditLimit: 300000,
-    outstandingBalance: 230000,
-    paymentTerms: 'Net 45',
-    discountPercentage: 10,
-    branch: 'Main Distribution Hub',
-    status: 'Active',
-  },
-  {
-    companyName: 'Apex Global Supply',
-    contactPerson: 'Samantha Wei',
-    email: 's.wei@apexsupply.com',
-    phone: '+1 (555) 567-1234',
-    tier: 'Gold',
-    creditLimit: 120000,
-    outstandingBalance: 94800,
-    paymentTerms: 'Net 30',
-    discountPercentage: 4,
-    branch: 'West Coast Node',
-    status: 'Active',
-  },
-  {
-    companyName: 'Vanguard Industrial Parts',
-    contactPerson: 'Marcus Thorne',
-    email: 'mthorne@vanguardindustrial.com',
-    phone: '+1 (555) 678-2345',
-    tier: 'Silver',
-    creditLimit: 80000,
     outstandingBalance: 32000,
-    paymentTerms: 'Net 15',
-    discountPercentage: 2,
-    branch: 'Main Distribution Hub',
-    status: 'Active',
+    paymentTerms: 'Net 30',
+    billingAddress: {
+      street: '450 Innovation Parkway, Suite 800',
+      city: 'San Francisco',
+      state: 'CA',
+      postalCode: '94107',
+      country: 'United States',
+    },
+    shippingAddress: {
+      street: '120 Logistics Boulevard, Dock 4',
+      city: 'Oakland',
+      state: 'CA',
+      postalCode: '94607',
+      country: 'United States',
+    },
+  },
+  {
+    companyName: 'Titan Industrial Systems LLC',
+    contactPerson: 'Marcus Vance',
+    email: 'mvance@titanindustrial.com',
+    phone: '+1 (312) 459-0021',
+    taxId: 'US-TAX-3391820',
+    tier: 'Platinum',
+    creditLimit: 500000,
+    outstandingBalance: 67500,
+    paymentTerms: 'Net 60',
+    billingAddress: {
+      street: '8800 Heavy Machinery Way',
+      city: 'Chicago',
+      state: 'IL',
+      postalCode: '60609',
+      country: 'United States',
+    },
+    shippingAddress: {
+      street: '8800 Heavy Machinery Way, Gate 2',
+      city: 'Chicago',
+      state: 'IL',
+      postalCode: '60609',
+      country: 'United States',
+    },
+  },
+  {
+    companyName: 'CloudGrid Datacenters Global',
+    contactPerson: 'David Chen',
+    email: 'dchen@cloudgridservers.com',
+    phone: '+1 (206) 778-9102',
+    taxId: 'US-TAX-7781923',
+    tier: 'Gold',
+    creditLimit: 350000,
+    outstandingBalance: 118400,
+    paymentTerms: 'Net 30',
+    billingAddress: {
+      street: '1001 Enterprise Blvd',
+      city: 'Seattle',
+      state: 'WA',
+      postalCode: '98101',
+      country: 'United States',
+    },
+    shippingAddress: {
+      street: '400 Data Way',
+      city: 'Tukwila',
+      state: 'WA',
+      postalCode: '98188',
+      country: 'United States',
+    },
   },
 ];
 
 const seedEmployees = [
   {
     employeeId: 'EMP-1001',
-    firstName: 'Sarah',
-    lastName: 'Chen',
-    email: 'sarah.chen@apexwholesale.com',
+    firstName: 'Elena',
+    lastName: 'Rostova',
+    email: 'elena.rostova@bizcorenexus.com',
     department: 'Supply Chain & Logistics',
-    designation: 'Senior Logistics Director',
+    designation: 'VP of Global Logistics',
     branch: 'Main Distribution Hub',
-    employmentType: 'Full-Time',
-    shift: 'Morning Shift (08:00 - 16:30)',
-    monthlySalary: 9500,
-    status: 'Active',
+    shiftSchedule: 'General Day',
+    salary: 145000,
+    leaveAllocations: { casual: 12, sick: 10, annual: 20 },
   },
   {
     employeeId: 'EMP-1002',
-    firstName: 'Julian',
-    lastName: 'Mercer',
-    email: 'julian.mercer@apexwholesale.com',
+    firstName: 'Darius',
+    lastName: 'Vance',
+    email: 'darius.vance@bizcorenexus.com',
     department: 'Warehouse Operations',
-    designation: 'Warehouse Master Inventory Auditor',
-    branch: 'Main Distribution Hub',
-    employmentType: 'Full-Time',
-    shift: 'Morning Shift (08:00 - 16:30)',
-    monthlySalary: 7200,
-    status: 'Active',
+    designation: 'Senior Warehouse Lead',
+    branch: 'Midwest Facility',
+    shiftSchedule: 'Morning Shift',
+    salary: 82000,
+    leaveAllocations: { casual: 10, sick: 8, annual: 15 },
   },
   {
     employeeId: 'EMP-1003',
-    firstName: 'Amara',
-    lastName: 'Okafor',
-    email: 'amara.okafor@apexwholesale.com',
+    firstName: 'Aaliyah',
+    lastName: 'Patel',
+    email: 'aaliyah.patel@bizcorenexus.com',
     department: 'Wholesale Sales & CRM',
-    designation: 'VP of Enterprise Accounts',
-    branch: 'East Coast Hub',
-    employmentType: 'Full-Time',
-    shift: 'Flexible',
-    monthlySalary: 11000,
-    status: 'Active',
+    designation: 'Enterprise Account Executive',
+    branch: 'Main Distribution Hub',
+    shiftSchedule: 'General Day',
+    salary: 110000,
+    leaveAllocations: { casual: 12, sick: 10, annual: 18 },
   },
   {
     employeeId: 'EMP-1004',
-    firstName: 'Derek',
-    lastName: 'Kowalski',
-    email: 'derek.k@apexwholesale.com',
+    firstName: 'Liam',
+    lastName: 'Gallagher',
+    email: 'liam.gallagher@bizcorenexus.com',
     department: 'Human Resources',
-    designation: 'HR & Personnel Compliance Lead',
-    branch: 'Main Distribution Hub',
-    employmentType: 'Full-Time',
-    shift: 'Morning Shift (08:00 - 16:30)',
-    monthlySalary: 6800,
-    status: 'Active',
+    designation: 'Talent & People Ops Manager',
+    branch: 'East Coast Hub',
+    shiftSchedule: 'General Day',
+    salary: 95000,
+    leaveAllocations: { casual: 12, sick: 10, annual: 20 },
+  },
+];
+
+const seedSuppliers = [
+  {
+    code: 'SUP-0101',
+    name: 'Silicon Fabricators Global Ltd.',
+    category: 'Electronics & Hardware',
+    contactPerson: 'Kenji Takahashi',
+    email: 'kenji@siliconfabricators.com',
+    phone: '+1 (408) 555-0192',
+    leadTimeDays: 5,
+    rating: 4.9,
+    paymentTerms: 'Net 30',
+    address: { street: '100 Semi Conductor Blvd', city: 'San Jose', state: 'CA', country: 'United States' },
+    notes: 'Primary supplier for enterprise GPU dies and microcontroller components.',
+  },
+  {
+    code: 'SUP-0102',
+    name: 'Apex Industrial Steel & Hydraulics',
+    category: 'Industrial Machinery',
+    contactPerson: 'Robert Sterling',
+    email: 'rsterling@apexvalves.com',
+    phone: '+1 (313) 555-8921',
+    leadTimeDays: 7,
+    rating: 4.7,
+    paymentTerms: 'Net 60',
+    address: { street: '77 Industrial Parkway', city: 'Detroit', state: 'MI', country: 'United States' },
+    notes: 'High-pressure pneumatic cylinders and precision fluid actuators.',
+  },
+  {
+    code: 'SUP-0103',
+    name: 'EcoPack Cargo Logistics Materials',
+    category: 'Packaging & Cargo',
+    contactPerson: 'Maria Santos',
+    email: 'maria@ecopackcargo.com',
+    phone: '+1 (713) 555-4432',
+    leadTimeDays: 3,
+    rating: 4.8,
+    paymentTerms: 'Net 15',
+    address: { street: '420 Port Freight Ave', city: 'Houston', state: 'TX', country: 'United States' },
+    notes: 'Heat-treated wooden export pallets and 80-gauge stretch wrap film.',
   },
 ];
 
 const runSeed = async () => {
   try {
-    console.log('🌱 Connecting to MongoDB for seeding...');
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('✅ Connected to database.');
+    const mongoUri = process.env.MONGODB_URI;
+    if (!mongoUri) {
+      throw new Error('MONGODB_URI is not defined in server/.env');
+    }
+
+    console.log('Connecting to MongoDB Atlas Cluster...');
+    await mongoose.connect(mongoUri);
+    console.log('Connected to MongoDB Atlas.');
 
     // Clear existing operational collections
-    try {
-      await mongoose.connection.collection('employeerecords').dropIndexes();
-    } catch {}
-
     await Promise.all([
       Product.deleteMany({}),
       Customer.deleteMany({}),
       Order.deleteMany({}),
       EmployeeRecord.deleteMany({}),
       StockMovement.deleteMany({}),
+      Supplier.deleteMany({}),
+      PurchaseOrder.deleteMany({}),
+      Shipment.deleteMany({}),
+      Invoice.deleteMany({}),
+      PaymentTransaction.deleteMany({}),
+      Notification.deleteMany({}),
+      AuditLog.deleteMany({}),
     ]);
-    console.log('🧹 Cleaned existing operational collections.');
+    console.log('🧹 Cleaned existing operational data.');
 
-    // 1. Insert Products
-    const createdProducts = await Product.insertMany(seedProducts);
-    console.log(`📦 Seeded ${createdProducts.length} Inventory SKUs.`);
+    // 1. Seed Products
+    const createdProducts = await Product.insertMany(
+      seedProducts.map((p) => ({
+        sku: p.sku,
+        name: p.name,
+        category: p.category,
+        barcode: p.barcode,
+        costPrice: p.costPrice,
+        sellingPrice: p.sellingPrice,
+        currentStock: p.currentStock,
+        reorderPoint: p.reorderPoint,
+        unitOfMeasure: p.unitOfMeasure,
+        warehouseBin: p.warehouseBin,
+        branch: p.branch,
+        description: p.description,
+        status: p.currentStock <= p.reorderPoint ? 'Low Stock' : 'In Stock',
+      }))
+    );
+    console.log(`📦 Seeded ${createdProducts.length} Enterprise Inventory Products.`);
 
-    // 2. Insert Customers
+    // 2. Seed Customers
     const createdCustomers = await Customer.insertMany(seedCustomers);
     console.log(`🏢 Seeded ${createdCustomers.length} B2B Wholesale Customers.`);
 
-    // 3. Insert Employees
-    const employeesWithUser = seedEmployees.map((emp) => ({
-      ...emp,
-      user: new mongoose.Types.ObjectId(),
-    }));
-    const createdEmployees = await EmployeeRecord.insertMany(employeesWithUser);
-    console.log(`👥 Seeded ${createdEmployees.length} Employee Records.`);
+    // 3. Seed Employees
+    const createdEmployees = await EmployeeRecord.insertMany(
+      seedEmployees.map((e) => ({
+        employeeId: e.employeeId,
+        firstName: e.firstName,
+        lastName: e.lastName,
+        email: e.email,
+        department: e.department,
+        designation: e.designation,
+        branch: e.branch,
+        shiftSchedule: e.shiftSchedule,
+        salary: e.salary,
+        dateOfJoining: new Date(2023, 1, 15),
+        leaveAllocations: e.leaveAllocations,
+        emergencyContact: {
+          name: 'Primary Contact',
+          relationship: 'Spouse',
+          phone: '+1 (555) 998-1029',
+        },
+      }))
+    );
+    console.log(`👥 Seeded ${createdEmployees.length} Staff Personnel Records.`);
 
-    // 4. Create Initial Wholesale Orders
+    // 4. Seed Suppliers
+    const createdSuppliers = await Supplier.insertMany(seedSuppliers);
+    console.log(`🏭 Seeded ${createdSuppliers.length} Enterprise Suppliers.`);
+
+    // 5. Seed Orders
     const sampleOrders = [
       {
-        orderNumber: 'ORD-2026-89421',
+        orderNumber: 'ORD-2026-90812',
         customer: createdCustomers[0]._id,
         customerName: createdCustomers[0].companyName,
+        branch: 'Main Distribution Hub',
         items: [
           {
             product: createdProducts[0]._id,
             sku: createdProducts[0].sku,
             name: createdProducts[0].name,
-            quantity: 10,
+            quantity: 3,
             unitPrice: 14800,
             discountPercentage: 0,
-            total: 148000,
+            total: 44400,
+          },
+          {
+            product: createdProducts[2]._id,
+            sku: createdProducts[2].sku,
+            name: createdProducts[2].name,
+            quantity: 5,
+            unitPrice: 2200,
+            discountPercentage: 0,
+            total: 11000,
           },
         ],
-        subtotal: 148000,
-        shippingFee: 500,
-        totalAmount: 148500,
-        status: 'Shipped',
-        paymentStatus: 'Unpaid',
-        branch: 'East Coast Hub',
-        shippingMethod: 'Dedicated Freight Express',
-        trackingNumber: 'TRK-9908234-US',
+        subtotal: 55400,
+        taxAmount: 2216,
+        shippingFee: 1200,
+        totalAmount: 58816,
+        status: 'Delivered',
+        paymentStatus: 'Paid',
       },
       {
-        orderNumber: 'ORD-2026-89420',
+        orderNumber: 'ORD-2026-91402',
         customer: createdCustomers[1]._id,
         customerName: createdCustomers[1].companyName,
+        branch: 'Midwest Facility',
         items: [
           {
             product: createdProducts[3]._id,
@@ -326,57 +435,227 @@ const runSeed = async () => {
             discountPercentage: 0,
             total: 67500,
           },
-          {
-            product: createdProducts[6]._id,
-            sku: createdProducts[6].sku,
-            name: createdProducts[6].name,
-            quantity: 8,
-            unitPrice: 980,
-            discountPercentage: 0,
-            total: 7840,
-          },
         ],
-        subtotal: 75340,
+        subtotal: 67500,
+        taxAmount: 2700,
         shippingFee: 860,
-        totalAmount: 76200,
-        status: 'Processing',
+        totalAmount: 71060,
+        status: 'Shipped',
         paymentStatus: 'Unpaid',
-        branch: 'Midwest Facility',
       },
       {
-        orderNumber: 'ORD-2026-89419',
+        orderNumber: 'ORD-2026-92185',
         customer: createdCustomers[2]._id,
         customerName: createdCustomers[2].companyName,
+        branch: 'Main Distribution Hub',
         items: [
           {
             product: createdProducts[1]._id,
             sku: createdProducts[1].sku,
             name: createdProducts[1].name,
-            quantity: 45,
+            quantity: 20,
             unitPrice: 4850,
             discountPercentage: 0,
-            total: 218250,
+            total: 97000,
           },
         ],
-        subtotal: 218250,
-        shippingFee: 11750,
-        totalAmount: 230000,
+        subtotal: 97000,
+        taxAmount: 3880,
+        shippingFee: 2400,
+        totalAmount: 103280,
         status: 'Approved',
         paymentStatus: 'Unpaid',
-        branch: 'Main Distribution Hub',
       },
     ];
 
-    await Order.insertMany(sampleOrders);
-    console.log(`📑 Seeded ${sampleOrders.length} Wholesale Orders with Live Invoicing.`);
+    const createdOrders = await Order.insertMany(sampleOrders);
+    console.log(`📑 Seeded ${createdOrders.length} Wholesale Orders.`);
+
+    // 6. Seed Purchase Orders
+    const samplePOs = [
+      {
+        poNumber: 'PO-2026-01001',
+        supplier: createdSuppliers[0]._id,
+        destinationBranch: 'Main Distribution Hub',
+        items: [
+          {
+            product: createdProducts[2]._id,
+            sku: createdProducts[2].sku,
+            name: createdProducts[2].name,
+            unitCost: 1450,
+            quantity: 20,
+            total: 29000,
+          },
+        ],
+        totalAmount: 29000,
+        status: 'Issued',
+        orderDate: new Date(),
+        expectedDeliveryDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+        notes: 'Replenish low-stock core fiber switches.',
+      },
+      {
+        poNumber: 'PO-2026-01002',
+        supplier: createdSuppliers[1]._id,
+        destinationBranch: 'Midwest Facility',
+        items: [
+          {
+            product: createdProducts[4]._id,
+            sku: createdProducts[4].sku,
+            name: createdProducts[4].name,
+            unitCost: 2200,
+            quantity: 15,
+            total: 33000,
+          },
+        ],
+        totalAmount: 33000,
+        status: 'In Transit',
+        orderDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        expectedDeliveryDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+        notes: 'Hydraulic pumps restock consignment.',
+      },
+    ];
+    await PurchaseOrder.insertMany(samplePOs);
+    console.log(`📋 Seeded ${samplePOs.length} Purchase Orders.`);
+
+    // 7. Seed Shipments
+    const sampleShipments = [
+      {
+        trackingNumber: 'TRK-2026-001001',
+        order: createdOrders[0]._id,
+        customer: createdCustomers[0]._id,
+        carrier: 'Nexus Fleet Transit',
+        serviceLevel: 'Next-Day Air',
+        originBranch: 'Main Distribution Hub',
+        destinationAddress: createdCustomers[0].shippingAddress,
+        status: 'Delivered',
+        dispatchDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+        estimatedDelivery: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        actualDelivery: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        totalWeightKg: 85,
+        totalPackages: 4,
+        driverName: 'Robert Vance',
+        driverPhone: '+1 (415) 381-9920',
+        vehicleNumber: 'NX-TRANSIT-01',
+        checkpoints: [
+          { location: 'Main Distribution Hub', statusDescription: 'Consignment packaged & loaded.', timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000) },
+          { location: 'Oakland Logistics Gate 4', statusDescription: 'Delivered and signature captured.', timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) },
+        ],
+      },
+      {
+        trackingNumber: 'TRK-2026-001002',
+        order: createdOrders[1]._id,
+        customer: createdCustomers[1]._id,
+        carrier: 'FedEx Enterprise',
+        serviceLevel: 'Standard Ground',
+        originBranch: 'Midwest Facility',
+        destinationAddress: createdCustomers[1].shippingAddress,
+        status: 'In Transit',
+        dispatchDate: new Date(),
+        estimatedDelivery: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+        totalWeightKg: 120,
+        totalPackages: 8,
+        driverName: 'Marcus Vance',
+        driverPhone: '+1 (312) 890-1122',
+        vehicleNumber: 'FDX-FREIGHT-882',
+        checkpoints: [
+          { location: 'Midwest Facility Yard', statusDescription: 'Departed sorting facility in transit.', timestamp: new Date() },
+        ],
+      },
+    ];
+    await Shipment.insertMany(sampleShipments);
+    console.log(`🚚 Seeded ${sampleShipments.length} Logistics Freight Shipments.`);
+
+    // 8. Seed Invoices & Transactions
+    const sampleInvoices = [
+      {
+        invoiceNumber: 'INV-2026-001001',
+        order: createdOrders[0]._id,
+        customer: createdCustomers[0]._id,
+        issueDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+        dueDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000),
+        items: createdOrders[0].items,
+        subtotal: createdOrders[0].subtotal,
+        taxAmount: createdOrders[0].taxAmount,
+        shippingFee: createdOrders[0].shippingFee,
+        grandTotal: createdOrders[0].totalAmount,
+        amountPaid: createdOrders[0].totalAmount,
+        balanceDue: 0,
+        status: 'Paid',
+        paymentTerms: 'Net 30',
+      },
+      {
+        invoiceNumber: 'INV-2026-001002',
+        order: createdOrders[1]._id,
+        customer: createdCustomers[1]._id,
+        issueDate: new Date(),
+        dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        items: createdOrders[1].items,
+        subtotal: createdOrders[1].subtotal,
+        taxAmount: createdOrders[1].taxAmount,
+        shippingFee: createdOrders[1].shippingFee,
+        grandTotal: createdOrders[1].totalAmount,
+        amountPaid: 0,
+        balanceDue: createdOrders[1].totalAmount,
+        status: 'Unpaid',
+        paymentTerms: 'Net 60',
+      },
+    ];
+    const createdInvoices = await Invoice.insertMany(sampleInvoices);
+    console.log(`💰 Seeded ${createdInvoices.length} Financial Invoices.`);
+
+    // Seed Payment Transaction for paid invoice
+    await PaymentTransaction.create({
+      transactionId: 'TXN-2026-001001',
+      invoice: createdInvoices[0]._id,
+      customer: createdCustomers[0]._id,
+      amount: createdInvoices[0].grandTotal,
+      paymentMethod: 'Bank Wire',
+      referenceNumber: 'WIRE-US-9812401',
+      status: 'Success',
+      notes: 'Payment settled via Chase Commercial Wire.',
+    });
+    console.log('💳 Seeded Payment Transactions.');
+
+    // 9. Seed Notifications
+    const sampleNotifications = [
+      {
+        title: 'Safety Stock Low Alert',
+        message: '48-Port Managed Switch (ELEC-SW-48P) is below reorder point (8 remaining).',
+        type: 'WARNING',
+        category: 'INVENTORY',
+        link: '/procurement',
+      },
+      {
+        title: 'Wholesale Consignment Dispatched',
+        message: 'Shipment TRK-2026-001002 dispatched via FedEx Enterprise to Titan Industrial.',
+        type: 'INFO',
+        category: 'LOGISTICS',
+        link: '/logistics',
+      },
+      {
+        title: 'Invoice Payment Settled',
+        message: 'Received wire payment of $58,816.00 for Invoice INV-2026-001001 from Apex Robotics.',
+        type: 'SUCCESS',
+        category: 'FINANCE',
+        link: '/finance',
+      },
+    ];
+    await Notification.insertMany(sampleNotifications);
+    console.log(`🔔 Seeded ${sampleNotifications.length} Notifications.`);
 
     console.log(`
-🎉 Phase 2 Enterprise Database Seeding Complete!
 ======================================================
-SKUs:        ${createdProducts.length}
-Accounts:    ${createdCustomers.length}
-Personnel:   ${createdEmployees.length}
-Orders:      ${sampleOrders.length}
+🎉 Phase 3 Full-Suite Database Seeding Complete!
+======================================================
+SKUs:          ${createdProducts.length}
+Customers:     ${createdCustomers.length}
+Employees:     ${createdEmployees.length}
+Suppliers:     ${createdSuppliers.length}
+Orders:        ${createdOrders.length}
+POs:           ${samplePOs.length}
+Shipments:     ${sampleShipments.length}
+Invoices:      ${createdInvoices.length}
+Notifications: ${sampleNotifications.length}
 ======================================================
     `);
     process.exit(0);

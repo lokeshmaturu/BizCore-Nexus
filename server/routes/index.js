@@ -11,6 +11,11 @@ const inventoryRoutes = require('./inventoryRoutes');
 const salesRoutes = require('./salesRoutes');
 const hrRoutes = require('./hrRoutes');
 const analyticsRoutes = require('./analyticsRoutes');
+const procurementRoutes = require('./procurementRoutes');
+const logisticsRoutes = require('./logisticsRoutes');
+const financeRoutes = require('./financeRoutes');
+const aiRoutes = require('./aiRoutes');
+const notificationRoutes = require('./notificationRoutes');
 const { getIsConnected } = require('../config/db');
 const { ApiResponse } = require('../utils/ApiResponse');
 
@@ -22,7 +27,7 @@ router.get('/health', (req, res) => {
     uptime: process.uptime(),
     dbConnected: getIsConnected(),
     environment: process.env.NODE_ENV || 'development',
-    version: '2.0.0',
+    version: '3.0.0',
   });
 });
 
@@ -33,5 +38,10 @@ router.use('/inventory', inventoryRoutes);
 router.use('/sales', salesRoutes);
 router.use('/hr', hrRoutes);
 router.use('/analytics', analyticsRoutes);
+router.use('/procurement', procurementRoutes);
+router.use('/logistics', logisticsRoutes);
+router.use('/finance', financeRoutes);
+router.use('/ai', aiRoutes);
+router.use('/notifications', notificationRoutes);
 
 module.exports = router;

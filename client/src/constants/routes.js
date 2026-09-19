@@ -13,9 +13,12 @@ export const ROUTES = {
   PROFILE: '/profile',
   USERS: '/users',
   
-  // Future Phase placeholders
+  // Enterprise Modules
   INVENTORY: '/inventory',
   SALES: '/sales',
+  PROCUREMENT: '/procurement',
+  LOGISTICS: '/logistics',
+  FINANCE: '/finance',
   HR: '/hr',
   SETTINGS: '/settings',
 

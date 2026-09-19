@@ -3,6 +3,8 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import ErrorBoundary from '../components/common/ErrorBoundary';
+import NexusCopilotDrawer from '../components/ai/NexusCopilotDrawer';
+import NotificationDrawer from '../components/notifications/NotificationDrawer';
 
 export const DashboardLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -51,6 +53,10 @@ export const DashboardLayout = () => {
           </div>
         </footer>
       </div>
+
+      {/* Global Phase 3 AI Copilot & Notification Drawers */}
+      <NexusCopilotDrawer />
+      <NotificationDrawer />
     </div>
   );
 };
