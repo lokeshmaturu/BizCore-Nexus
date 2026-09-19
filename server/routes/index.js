@@ -16,6 +16,7 @@ const logisticsRoutes = require('./logisticsRoutes');
 const financeRoutes = require('./financeRoutes');
 const aiRoutes = require('./aiRoutes');
 const notificationRoutes = require('./notificationRoutes');
+const settingsRoutes = require('./settingsRoutes');
 const { getIsConnected } = require('../config/db');
 const { ApiResponse } = require('../utils/ApiResponse');
 
@@ -27,7 +28,7 @@ router.get('/health', (req, res) => {
     uptime: process.uptime(),
     dbConnected: getIsConnected(),
     environment: process.env.NODE_ENV || 'development',
-    version: '3.0.0',
+    version: '4.0.0',
   });
 });
 
@@ -43,5 +44,6 @@ router.use('/logistics', logisticsRoutes);
 router.use('/finance', financeRoutes);
 router.use('/ai', aiRoutes);
 router.use('/notifications', notificationRoutes);
+router.use('/settings', settingsRoutes);
 
 module.exports = router;

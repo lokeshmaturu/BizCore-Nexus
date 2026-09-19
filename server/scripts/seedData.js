@@ -19,6 +19,9 @@ const Invoice = require('../models/Invoice');
 const PaymentTransaction = require('../models/PaymentTransaction');
 const Notification = require('../models/Notification');
 const AuditLog = require('../models/AuditLog');
+const Branch = require('../models/Branch');
+const Webhook = require('../models/Webhook');
+const SystemConfig = require('../models/SystemConfig');
 const User = require('../models/User');
 
 const seedProducts = [
@@ -332,6 +335,9 @@ const runSeed = async () => {
       PaymentTransaction.deleteMany({}),
       Notification.deleteMany({}),
       AuditLog.deleteMany({}),
+      Branch.deleteMany({}),
+      Webhook.deleteMany({}),
+      SystemConfig.deleteMany({}),
     ]);
     console.log('🧹 Cleaned existing operational data.');
 
@@ -643,9 +649,78 @@ const runSeed = async () => {
     await Notification.insertMany(sampleNotifications);
     console.log(`🔔 Seeded ${sampleNotifications.length} Notifications.`);
 
+    // 10. Seed Branches
+    const sampleBranches = [
+      {
+        code: 'BR-001',
+        name: 'Main Distribution Hub',
+        city: 'Chicago',
+        state: 'IL',
+        managerName: 'Elena Rostova',
+        managerEmail: 'elena.rostova@bizcorenexus.com',
+        capacitySqFt: 120000,
+        utilizationPercentage: 74,
+        activeFleetUnits: 18,
+      },
+      {
+        code: 'BR-002',
+        name: 'East Coast Facility',
+        city: 'Newark',
+        state: 'NJ',
+        managerName: 'Liam Gallagher',
+        managerEmail: 'liam.gallagher@bizcorenexus.com',
+        capacitySqFt: 85000,
+        utilizationPercentage: 58,
+        activeFleetUnits: 12,
+      },
+      {
+        code: 'BR-003',
+        name: 'Midwest Logistics Depot',
+        city: 'Indianapolis',
+        state: 'IN',
+        managerName: 'Darius Vance',
+        managerEmail: 'darius.vance@bizcorenexus.com',
+        capacitySqFt: 60000,
+        utilizationPercentage: 42,
+        activeFleetUnits: 8,
+      },
+    ];
+    await Branch.insertMany(sampleBranches);
+    console.log(`🏢 Seeded ${sampleBranches.length} Branch Operating Nodes.`);
+
+    // 11. Seed Webhook Endpoints
+    const sampleWebhooks = [
+      {
+        name: 'ERP Cloud Synchronization Dispatcher',
+        url: 'https://erp.enterprise-cloud.io/api/v1/nexus-events',
+        events: ['ORDER_CREATED', 'ORDER_SHIPPED', 'STOCK_DEPLETED'],
+        status: 'Active',
+      },
+      {
+        name: 'Automated Accounting & Tax Webhook',
+        url: 'https://finance.acme-corp.com/webhooks/invoices',
+        events: ['INVOICE_GENERATED', 'PAYMENT_RECEIVED'],
+        status: 'Active',
+      },
+    ];
+    await Webhook.insertMany(sampleWebhooks);
+    console.log(`🔗 Seeded ${sampleWebhooks.length} Developer Webhooks.`);
+
+    // 12. Seed System Configuration
+    await SystemConfig.create({
+      companyName: 'BizCore Nexus Global Wholesale Corp',
+      defaultCurrency: 'USD',
+      defaultTaxRate: 4.0,
+      lowStockThreshold: 15,
+      sessionTimeoutMinutes: 120,
+      enforceStrongPasswords: true,
+      enableAuditLogging: true,
+    });
+    console.log('⚙️ Seeded Enterprise System Configuration.');
+
     console.log(`
 ======================================================
-🎉 Phase 3 Full-Suite Database Seeding Complete!
+🎉 Phase 1, 2, 3 & 4 Full Enterprise Platform Seed Complete!
 ======================================================
 SKUs:          ${createdProducts.length}
 Customers:     ${createdCustomers.length}
@@ -655,6 +730,8 @@ Orders:        ${createdOrders.length}
 POs:           ${samplePOs.length}
 Shipments:     ${sampleShipments.length}
 Invoices:      ${createdInvoices.length}
+Branches:      ${sampleBranches.length}
+Webhooks:      ${sampleWebhooks.length}
 Notifications: ${sampleNotifications.length}
 ======================================================
     `);

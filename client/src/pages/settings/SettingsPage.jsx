@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import {
   Settings,
@@ -12,200 +13,614 @@ import {
   CheckCircle2,
   Server,
   Sparkles,
+  Download,
+  Plus,
+  Send,
+  Zap,
+  Activity,
+  FileSpreadsheet,
+  Layers,
+  RefreshCw,
+  Code,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { PageTitle } from '../../components/common/PageTitle';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
+import { Modal } from '../../components/ui/Modal';
+import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { useAuth } from '../../hooks/useAuth';
+import {
+  fetchBranches,
+  createBranch,
+  fetchWebhooks,
+  createWebhook,
+  testWebhook,
+  fetchSystemConfig,
+  updateSystemConfig,
+  clearPingResult,
+} from '../../store/settingsSlice';
+import settingsService from '../../services/settingsService';
 
 export const SettingsPage = () => {
+  const dispatch = useDispatch();
   const { user, companyName, branch } = useAuth();
-  const [activeSubTab, setActiveSubTab] = useState('general');
+  const { branches, webhooks, config, lastPingResult, isLoading } = useSelector(
+    (state) => state.settings
+  );
 
-  const [companySettings, setCompanySettings] = useState({
-    companyName: companyName || 'Apex Wholesale Corp',
-    taxId: 'US-TAX-8921448',
-    defaultCurrency: 'USD ($)',
-    timezone: 'UTC-5 (Eastern Time)',
-    autoReorder: true,
-    webhookURL: 'https://api.nexus.enterprise/v2/events',
+  const [activeTab, setActiveTab] = useState('branches'); // 'branches' | 'webhooks' | 'security' | 'exports'
+  const [isBranchModalOpen, setIsBranchModalOpen] = useState(false);
+  const [isWebhookModalOpen, setIsWebhookModalOpen] = useState(false);
+
+  // New Branch Form
+  const [branchForm, setBranchForm] = useState({
+    name: '',
+    city: '',
+    state: '',
+    country: 'United States',
+    managerName: '',
+    managerEmail: '',
+    capacitySqFt: 50000,
   });
 
-  const handleSave = (e) => {
+  // New Webhook Form
+  const [webhookForm, setWebhookForm] = useState({
+    name: '',
+    url: '',
+    events: ['ORDER_CREATED', 'STOCK_DEPLETED'],
+  });
+
+  // Security Policy Form
+  const [securityForm, setSecurityForm] = useState({
+    sessionTimeoutMinutes: 120,
+    enforceStrongPasswords: true,
+    enableAuditLogging: true,
+    defaultTaxRate: 4.0,
+  });
+
+  useEffect(() => {
+    dispatch(fetchBranches());
+    dispatch(fetchWebhooks());
+    dispatch(fetchSystemConfig());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (config) {
+      setSecurityForm({
+        sessionTimeoutMinutes: config.sessionTimeoutMinutes || 120,
+        enforceStrongPasswords: config.enforceStrongPasswords !== false,
+        enableAuditLogging: config.enableAuditLogging !== false,
+        defaultTaxRate: config.defaultTaxRate || 4.0,
+      });
+    }
+  }, [config]);
+
+  const handleCreateBranchSubmit = async (e) => {
     e.preventDefault();
-    toast.success('Enterprise configuration committed across active nodes.');
+    if (!branchForm.name || !branchForm.city || !branchForm.state) {
+      toast.error('Please fill in required branch fields.');
+      return;
+    }
+
+    try {
+      await dispatch(createBranch(branchForm)).unwrap();
+      toast.success('Operating Branch Node provisioned successfully!');
+      setIsBranchModalOpen(false);
+    } catch (err) {
+      toast.error(err || 'Failed to create branch');
+    }
+  };
+
+  const handleCreateWebhookSubmit = async (e) => {
+    e.preventDefault();
+    if (!webhookForm.name || !webhookForm.url) {
+      toast.error('Please enter webhook endpoint name and URL.');
+      return;
+    }
+
+    try {
+      await dispatch(createWebhook(webhookForm)).unwrap();
+      toast.success('Developer webhook endpoint registered!');
+      setIsWebhookModalOpen(false);
+    } catch (err) {
+      toast.error(err || 'Failed to register webhook');
+    }
+  };
+
+  const handleTestWebhookPing = async (webhookId) => {
+    try {
+      const res = await dispatch(testWebhook(webhookId)).unwrap();
+      toast.success('Simulated HMAC SHA-256 Webhook ping dispatched!');
+    } catch (err) {
+      toast.error(err || 'Webhook ping failed');
+    }
+  };
+
+  const handleSaveSecurityPolicies = async (e) => {
+    e.preventDefault();
+    try {
+      await dispatch(updateSystemConfig(securityForm)).unwrap();
+      toast.success('Enterprise security policies committed to cluster!');
+    } catch (err) {
+      toast.error(err || 'Failed to update policies');
+    }
+  };
+
+  const handleDownloadDataset = (type) => {
+    const url = settingsService.exportDatasetUrl(type);
+    toast.promise(
+      new Promise((resolve) => {
+        window.open(url, '_blank');
+        setTimeout(resolve, 800);
+      }),
+      {
+        loading: `Compiling consolidated ${type} dataset...`,
+        success: `Exported ${type.toUpperCase()} ledger dataset (CSV)!`,
+        error: 'Export failed',
+      }
+    );
   };
 
   return (
-    <div className="space-y-6 animate-fade-in max-w-5xl mx-auto">
-      <PageTitle
-        title="Enterprise System Settings"
-        subtitle="Global tenant settings, distribution node registry, and security policies."
-        breadcrumbs={['Nexus', 'Management', 'Settings']}
-      />
+    <div className="space-y-6 animate-fade-in max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+            Enterprise Command & <span className="gradient-text">Settings Console</span>
+          </h1>
+          <p className="text-sm text-slate-400 mt-1">
+            Multi-branch node registry, developer webhooks, security policies, and consolidated data export.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            Node v4.0 Active
+          </span>
+        </div>
+      </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-1.5 p-1 bg-slate-950/60 rounded-2xl border border-slate-800 w-fit">
+      <div className="flex items-center gap-1.5 p-1 bg-slate-950/80 rounded-2xl border border-slate-800 w-fit flex-wrap">
         <button
           type="button"
-          onClick={() => setActiveSubTab('general')}
+          onClick={() => setActiveTab('branches')}
           className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-            activeSubTab === 'general'
+            activeTab === 'branches'
               ? 'bg-brand-600 text-white shadow-md'
               : 'text-slate-400 hover:text-white'
           }`}
         >
-          General & Tenant
+          Branch Nodes ({branches.length})
         </button>
         <button
           type="button"
-          onClick={() => setActiveSubTab('security')}
+          onClick={() => setActiveTab('webhooks')}
           className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-            activeSubTab === 'security'
+            activeTab === 'webhooks'
               ? 'bg-brand-600 text-white shadow-md'
               : 'text-slate-400 hover:text-white'
           }`}
         >
-          Security & RBAC
+          Developer Webhooks ({webhooks.length})
         </button>
         <button
           type="button"
-          onClick={() => setActiveSubTab('database')}
+          onClick={() => setActiveTab('security')}
           className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-            activeSubTab === 'database'
+            activeTab === 'security'
               ? 'bg-brand-600 text-white shadow-md'
               : 'text-slate-400 hover:text-white'
           }`}
         >
-          Database & Telemetry
+          Security & Policies
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('exports')}
+          className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+            activeTab === 'exports'
+              ? 'bg-brand-600 text-white shadow-md'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          Data Backup & Exports
         </button>
       </div>
 
-      {activeSubTab === 'general' && (
-        <form onSubmit={handleSave} className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-6">
+      {/* 1. Branch Operating Nodes Tab */}
+      {activeTab === 'branches' && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-base font-bold text-white">Regional Distribution Centers</h2>
+              <p className="text-xs text-slate-400">Manage multi-branch warehousing, fleet units, and spatial utilization.</p>
+            </div>
+            <Button leftIcon={Plus} onClick={() => setIsBranchModalOpen(true)}>
+              Provision Branch Node
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {branches.length === 0 ? (
+              <div className="col-span-full py-12 text-center text-slate-500 text-xs">
+                No branch nodes configured.
+              </div>
+            ) : (
+              branches.map((b) => (
+                <Card key={b._id} className="p-5 border-slate-800 bg-slate-900/60 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs font-bold text-brand-400">{b.code}</span>
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                      Operational
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-bold text-white">{b.name}</h3>
+                    <p className="text-xs text-slate-400">{b.city}, {b.state} • {b.country}</p>
+                  </div>
+
+                  <div className="space-y-1.5 p-3 rounded-xl bg-slate-950/60 border border-slate-850 text-xs">
+                    <div className="flex justify-between text-slate-400">
+                      <span>Director:</span>
+                      <span className="text-slate-200 font-medium">{b.managerName}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-400">
+                      <span>Warehouse Area:</span>
+                      <span className="text-slate-200 font-medium">{b.capacitySqFt?.toLocaleString()} sq.ft</span>
+                    </div>
+                    <div className="flex justify-between text-slate-400">
+                      <span>Fleet Assigned:</span>
+                      <span className="text-slate-200 font-medium">{b.activeFleetUnits} Vehicles</span>
+                    </div>
+                  </div>
+
+                  {/* Utilization Bar */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[11px] text-slate-400">
+                      <span>Capacity Utilization:</span>
+                      <span className="font-bold text-white">{b.utilizationPercentage || 65}%</span>
+                    </div>
+                    <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-brand-500 to-indigo-500 rounded-full"
+                        style={{ width: `${b.utilizationPercentage || 65}%` }}
+                      />
+                    </div>
+                  </div>
+                </Card>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 2. Developer Webhooks Tab */}
+      {activeTab === 'webhooks' && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-base font-bold text-white">Event-Driven Webhooks & APIs</h2>
+              <p className="text-xs text-slate-400">Stream live business events with cryptographic HMAC SHA-256 signatures.</p>
+            </div>
+            <Button leftIcon={Plus} onClick={() => setIsWebhookModalOpen(true)}>
+              Register Webhook
+            </Button>
+          </div>
+
+          <div className="space-y-3">
+            {webhooks.length === 0 ? (
+              <div className="py-12 text-center text-slate-500 text-xs">
+                No webhooks configured yet.
+              </div>
+            ) : (
+              webhooks.map((wh) => (
+                <Card key={wh._id} className="p-5 border-slate-800 bg-slate-900/60 space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-white">{wh.name}</h3>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">
+                          {wh.status}
+                        </span>
+                      </div>
+                      <p className="font-mono text-xs text-brand-300 mt-1 truncate max-w-lg">{wh.url}</p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        leftIcon={Send}
+                        onClick={() => handleTestWebhookPing(wh._id)}
+                      >
+                        Test Ping
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800 text-[11px] text-slate-400">
+                    <span className="font-semibold text-slate-300">Subscribed Events:</span>
+                    {wh.events?.map((ev, i) => (
+                      <span key={i} className="px-2 py-0.5 rounded-md bg-slate-950 border border-slate-800 text-brand-300 font-mono text-[10px]">
+                        {ev}
+                      </span>
+                    ))}
+                  </div>
+                </Card>
+              ))
+            )}
+          </div>
+
+          {/* Test Ping Output Card */}
+          {lastPingResult && (
+            <div className="p-4 rounded-2xl bg-slate-950 border border-brand-500/30 space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-white flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  Webhook Event Dispatch Simulation ({lastPingResult.statusCode} OK)
+                </span>
+                <button
+                  onClick={() => dispatch(clearPingResult())}
+                  className="text-slate-500 hover:text-white"
+                >
+                  Dismiss
+                </button>
+              </div>
+              <pre className="p-3 rounded-xl bg-slate-900/90 text-brand-300 text-[11px] font-mono overflow-x-auto">
+                {JSON.stringify(lastPingResult.samplePayload, null, 2)}
+              </pre>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 3. Security & Policies Tab */}
+      {activeTab === 'security' && (
+        <form onSubmit={handleSaveSecurityPolicies} className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-6">
           <div className="border-b border-slate-800 pb-4">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-brand-400" />
-              <span>Enterprise Identity Configuration</span>
+              <Shield className="w-4 h-4 text-emerald-400" />
+              <span>Enterprise Governance & Security Configuration</span>
             </h3>
-            <p className="text-xs text-slate-400">
-              Primary entity metadata utilized across wholesale consignment invoices.
-            </p>
+            <p className="text-xs text-slate-400">Session lifecycles, authentication policies, and cryptographic audits.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
-              label="Operating Company Name"
-              value={companySettings.companyName}
-              onChange={(e) => setCompanySettings({ ...companySettings, companyName: e.target.value })}
+              label="Session Inactivity Timeout (Minutes)"
+              type="number"
+              value={securityForm.sessionTimeoutMinutes}
+              onChange={(e) => setSecurityForm({ ...securityForm, sessionTimeoutMinutes: parseInt(e.target.value, 10) || 60 })}
             />
             <Input
-              label="Enterprise Federal Tax / VAT ID"
-              value={companySettings.taxId}
-              onChange={(e) => setCompanySettings({ ...companySettings, taxId: e.target.value })}
+              label="Default Wholesale Consignment Tax Rate (%)"
+              type="number"
+              step="0.1"
+              value={securityForm.defaultTaxRate}
+              onChange={(e) => setSecurityForm({ ...securityForm, defaultTaxRate: parseFloat(e.target.value) || 0 })}
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input
-              label="Primary Ledger Currency"
-              value={companySettings.defaultCurrency}
-              disabled
-              className="bg-slate-950 opacity-70"
-            />
-            <Input
-              label="System Operational Timezone"
-              value={companySettings.timezone}
-              onChange={(e) => setCompanySettings({ ...companySettings, timezone: e.target.value })}
-            />
-          </div>
+          <div className="space-y-3 pt-2">
+            <label className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={securityForm.enforceStrongPasswords}
+                onChange={(e) => setSecurityForm({ ...securityForm, enforceStrongPasswords: e.target.checked })}
+                className="w-4 h-4 rounded text-brand-600 focus:ring-brand-500"
+              />
+              <div className="text-xs">
+                <p className="font-bold text-white">Enforce High-Entropy Passwords</p>
+                <p className="text-slate-400">Require uppercase, numeric, and special character combinations.</p>
+              </div>
+            </label>
 
-          <Input
-            label="Real-time Webhook Event Dispatcher"
-            value={companySettings.webhookURL}
-            onChange={(e) => setCompanySettings({ ...companySettings, webhookURL: e.target.value })}
-          />
+            <label className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={securityForm.enableAuditLogging}
+                onChange={(e) => setSecurityForm({ ...securityForm, enableAuditLogging: e.target.checked })}
+                className="w-4 h-4 rounded text-brand-600 focus:ring-brand-500"
+              />
+              <div className="text-xs">
+                <p className="font-bold text-white">Comprehensive Audit Logging (SOC-2)</p>
+                <p className="text-slate-400">Log all write actions across inventory, finance, and user provisioning.</p>
+              </div>
+            </label>
+          </div>
 
           <div className="pt-2 flex justify-end">
-            <Button type="submit" variant="primary" size="md" leftIcon={Save}>
-              Save Settings
+            <Button type="submit" variant="primary" leftIcon={Save}>
+              Save Security Policies
             </Button>
           </div>
         </form>
       )}
 
-      {activeSubTab === 'security' && (
-        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-5">
+      {/* 4. Data Backup & Exports Tab */}
+      {activeTab === 'exports' && (
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-6">
           <div className="border-b border-slate-800 pb-4">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Shield className="w-4 h-4 text-emerald-400" />
-              <span>RBAC Policy & Security Enforcement</span>
+              <Download className="w-4 h-4 text-brand-400" />
+              <span>Consolidated Enterprise Dataset Exporters</span>
             </h3>
             <p className="text-xs text-slate-400">
-              Granular access control policies enforcing tenant isolation.
+              Download live, structured CSV ledger exports from your MongoDB Atlas database.
             </p>
           </div>
 
-          <div className="space-y-3 text-xs">
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-3 flex flex-col justify-between">
               <div>
-                <p className="font-bold text-white">HttpOnly Cookie Encryption</p>
-                <p className="text-slate-400">Tokens are protected from XSS scripts via strict cookies.</p>
+                <h4 className="text-sm font-bold text-white">Inventory Valuation Ledger</h4>
+                <p className="text-xs text-slate-400 mt-1">Complete SKU catalog, cost price, selling price, and warehouse bin allocations.</p>
               </div>
-              <Badge variant="success" size="sm">Active</Badge>
+              <Button
+                size="sm"
+                variant="secondary"
+                leftIcon={FileSpreadsheet}
+                onClick={() => handleDownloadDataset('inventory')}
+              >
+                Export Inventory CSV
+              </Button>
             </div>
 
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-3 flex flex-col justify-between">
               <div>
-                <p className="font-bold text-white">Bcrypt 12-Salt Hashing</p>
-                <p className="text-slate-400">Passwords hashed with high-entropy cryptographic salts.</p>
+                <h4 className="text-sm font-bold text-white">Wholesale Orders Ledger</h4>
+                <p className="text-xs text-slate-400 mt-1">Consolidated B2B orders with taxes, shipping fees, totals, and payment status.</p>
               </div>
-              <Badge variant="success" size="sm">Enforced</Badge>
+              <Button
+                size="sm"
+                variant="secondary"
+                leftIcon={FileSpreadsheet}
+                onClick={() => handleDownloadDataset('sales')}
+              >
+                Export Orders CSV
+              </Button>
             </div>
 
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-3 flex flex-col justify-between">
               <div>
-                <p className="font-bold text-white">Brute-Force Rate Limiting</p>
-                <p className="text-slate-400">DDoS and auth attack mitigation active on all endpoints.</p>
+                <h4 className="text-sm font-bold text-white">Accounts Receivable Aging</h4>
+                <p className="text-xs text-slate-400 mt-1">Commercial tax invoices with due dates, amounts paid, and overdue balances.</p>
               </div>
-              <Badge variant="success" size="sm">300 req / 15m</Badge>
+              <Button
+                size="sm"
+                variant="secondary"
+                leftIcon={FileSpreadsheet}
+                onClick={() => handleDownloadDataset('invoices')}
+              >
+                Export Invoices CSV
+              </Button>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-3 flex flex-col justify-between">
+              <div>
+                <h4 className="text-sm font-bold text-white">B2B Customer Portfolios</h4>
+                <p className="text-xs text-slate-400 mt-1">Client accounts, credit authorizations, payment terms, and contact profiles.</p>
+              </div>
+              <Button
+                size="sm"
+                variant="secondary"
+                leftIcon={FileSpreadsheet}
+                onClick={() => handleDownloadDataset('customers')}
+              >
+                Export Customers CSV
+              </Button>
             </div>
           </div>
         </div>
       )}
 
-      {activeSubTab === 'database' && (
-        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-5">
-          <div className="border-b border-slate-800 pb-4">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Database className="w-4 h-4 text-brand-400" />
-              <span>Cluster Telemetry & Health</span>
-            </h3>
-            <p className="text-xs text-slate-400">Live connectivity parameters for MongoDB Atlas.</p>
+      {/* Provision Branch Modal */}
+      <Modal
+        isOpen={isBranchModalOpen}
+        onClose={() => setIsBranchModalOpen(false)}
+        title="Provision Operating Branch Node"
+        maxWidth="max-w-lg"
+      >
+        <form onSubmit={handleCreateBranchSubmit} className="space-y-4">
+          <Input
+            label="Branch Name"
+            placeholder="e.g. West Coast Regional Depot"
+            value={branchForm.name}
+            onChange={(e) => setBranchForm({ ...branchForm, name: e.target.value })}
+            required
+          />
+
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              label="City"
+              placeholder="e.g. Los Angeles"
+              value={branchForm.city}
+              onChange={(e) => setBranchForm({ ...branchForm, city: e.target.value })}
+              required
+            />
+            <Input
+              label="State / Province"
+              placeholder="e.g. CA"
+              value={branchForm.state}
+              onChange={(e) => setBranchForm({ ...branchForm, state: e.target.value })}
+              required
+            />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
-            <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-1">
-              <p className="text-slate-400">Cluster Host</p>
-              <p className="text-white font-bold truncate">cluster0.zsumsne.mongodb.net</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-1">
-              <p className="text-slate-400">Database Name</p>
-              <p className="text-emerald-400 font-bold">bizcore_nexus</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-1">
-              <p className="text-slate-400">API Protocol</p>
-              <p className="text-brand-300 font-bold">RESTful JSON (Express v4)</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-1">
-              <p className="text-slate-400">Operational Phase</p>
-              <p className="text-purple-400 font-bold">Phase 2 – Advanced Core</p>
-            </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              label="Director Name"
+              placeholder="e.g. Sarah Connor"
+              value={branchForm.managerName}
+              onChange={(e) => setBranchForm({ ...branchForm, managerName: e.target.value })}
+              required
+            />
+            <Input
+              label="Director Email"
+              type="email"
+              placeholder="director@bizcorenexus.com"
+              value={branchForm.managerEmail}
+              onChange={(e) => setBranchForm({ ...branchForm, managerEmail: e.target.value })}
+              required
+            />
           </div>
-        </div>
-      )}
+
+          <Input
+            label="Facility Area (Sq. Ft)"
+            type="number"
+            min="1000"
+            value={branchForm.capacitySqFt}
+            onChange={(e) => setBranchForm({ ...branchForm, capacitySqFt: parseInt(e.target.value, 10) || 50000 })}
+            required
+          />
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+            <Button variant="secondary" onClick={() => setIsBranchModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="submit">Provision Branch</Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Register Webhook Modal */}
+      <Modal
+        isOpen={isWebhookModalOpen}
+        onClose={() => setIsWebhookModalOpen(false)}
+        title="Register Developer Webhook Endpoint"
+        maxWidth="max-w-lg"
+      >
+        <form onSubmit={handleCreateWebhookSubmit} className="space-y-4">
+          <Input
+            label="Webhook Integration Name"
+            placeholder="e.g. ERP Cloud Sync Dispatcher"
+            value={webhookForm.name}
+            onChange={(e) => setWebhookForm({ ...webhookForm, name: e.target.value })}
+            required
+          />
+
+          <Input
+            label="Payload Destination URL (HTTPS)"
+            placeholder="https://api.yourcompany.com/webhooks/bizcore"
+            value={webhookForm.url}
+            onChange={(e) => setWebhookForm({ ...webhookForm, url: e.target.value })}
+            required
+          />
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+            <Button variant="secondary" onClick={() => setIsWebhookModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="submit">Register Endpoint</Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };
