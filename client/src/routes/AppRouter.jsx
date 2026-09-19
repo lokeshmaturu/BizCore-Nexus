@@ -12,6 +12,7 @@ import ProtectedRoute from './ProtectedRoute';
 import PublicRoute from './PublicRoute';
 
 // Core Pages
+import LandingPage from '../pages/landing/LandingPage';
 import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
@@ -80,8 +81,8 @@ export const AppRouter = () => {
           </Route>
         </Route>
 
-        {/* 3. Global Redirects & Catch-All */}
-        <Route path="/" element={<Navigate to={ROUTES.DASHBOARD} replace />} />
+        {/* 3. Global Public Landing Page & Catch-All */}
+        <Route path={ROUTES.LANDING} element={<LandingPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

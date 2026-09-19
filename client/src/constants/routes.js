@@ -3,7 +3,8 @@
  */
 
 export const ROUTES = {
-  // Public Auth
+  // Public
+  LANDING: '/',
   LOGIN: '/login',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
