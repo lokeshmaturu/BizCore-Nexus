@@ -35,7 +35,7 @@ export const Modal = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm"
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm"
             onClick={onClose}
           />
 
@@ -45,18 +45,18 @@ export const Modal = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className={`relative w-full ${maxWidth} glass-panel bg-slate-900/95 border border-slate-700/80 rounded-2xl shadow-2xl z-10 overflow-hidden`}
+            className={`relative w-full ${maxWidth} bg-white border border-slate-200 rounded-2xl shadow-2xl z-10 overflow-hidden`}
           >
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
               <div>
-                {title && <h3 className="text-lg font-bold text-slate-100">{title}</h3>}
-                {subtitle && <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>}
+                {title && <h3 className="text-lg font-bold text-slate-900">{title}</h3>}
+                {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
               </div>
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>

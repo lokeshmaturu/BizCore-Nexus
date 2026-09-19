@@ -66,7 +66,7 @@ export const UsersPage = () => {
       />
 
       {/* Filters & Search Toolbar */}
-      <div className="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
         <form onSubmit={handleSearchSubmit} className="relative w-full sm:w-80">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
           <input
@@ -74,7 +74,7 @@ export const UsersPage = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by name or email..."
-            className="w-full bg-slate-900/90 border border-slate-700/60 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all"
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-600 focus:bg-white focus:ring-1 focus:ring-brand-600 transition-all"
           />
         </form>
 
@@ -84,7 +84,7 @@ export const UsersPage = () => {
             <select
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-500 transition-colors"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-brand-600 focus:bg-white transition-colors"
             >
               <option value="">All Security Roles</option>
               {Object.values(ROLES).map((r) => (
@@ -108,11 +108,11 @@ export const UsersPage = () => {
       </div>
 
       {/* Users Table / Directory */}
-      <div className="glass-panel rounded-2xl border border-slate-800 overflow-hidden">
+      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="p-6 space-y-4">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex items-center gap-4 py-2 border-b border-slate-800/40">
+              <div key={i} className="flex items-center gap-4 py-2 border-b border-slate-100">
                 <Skeleton className="w-10 h-10 rounded-xl" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-1/4" />
@@ -123,41 +123,41 @@ export const UsersPage = () => {
             ))}
           </div>
         ) : error ? (
-          <div className="p-12 text-center text-slate-400 space-y-3">
-            <p className="text-rose-400">{error}</p>
+          <div className="p-12 text-center text-slate-500 space-y-3">
+            <p className="text-rose-600 font-medium">{error}</p>
             <Button variant="secondary" size="sm" onClick={loadUsers}>
               Retry Query
             </Button>
           </div>
         ) : users.length === 0 ? (
-          <div className="p-12 text-center text-slate-400 space-y-2">
-            <UsersIcon className="w-10 h-10 mx-auto text-slate-600 mb-2" />
-            <p className="text-sm font-semibold text-slate-300">No matching personnel located</p>
-            <p className="text-xs">Adjust your search parameters or role filter.</p>
+          <div className="p-12 text-center text-slate-500 space-y-2">
+            <UsersIcon className="w-10 h-10 mx-auto text-slate-300 mb-2" />
+            <p className="text-sm font-semibold text-slate-800">No matching personnel located</p>
+            <p className="text-xs text-slate-400">Adjust your search parameters or role filter.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="text-slate-400 bg-slate-950/40 border-b border-slate-800/80">
-                  <th className="py-3 px-6 font-semibold">User Details</th>
-                  <th className="py-3 px-6 font-semibold">Security Role</th>
-                  <th className="py-3 px-6 font-semibold">Branch / Node</th>
-                  <th className="py-3 px-6 font-semibold">Joined Date</th>
-                  <th className="py-3 px-6 font-semibold text-right">Status</th>
+                <tr className="text-slate-500 bg-slate-50 border-b border-slate-200 uppercase tracking-wider font-semibold text-[11px]">
+                  <th className="py-3.5 px-6">User Details</th>
+                  <th className="py-3.5 px-6">Security Role</th>
+                  <th className="py-3.5 px-6">Branch / Node</th>
+                  <th className="py-3.5 px-6">Joined Date</th>
+                  <th className="py-3.5 px-6 text-right">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/50 text-slate-200">
+              <tbody className="divide-y divide-slate-100 text-slate-700">
                 {users.map((item) => (
-                  <tr key={item._id} className="hover:bg-slate-800/30 transition-colors">
+                  <tr key={item._id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="py-3.5 px-6">
                       <div className="flex items-center gap-3">
                         <Avatar name={`${item.firstName} ${item.lastName}`} size="sm" />
                         <div>
-                          <p className="font-semibold text-white">
+                          <p className="font-semibold text-slate-900">
                             {item.firstName} {item.lastName}
                           </p>
-                          <p className="text-[11px] text-slate-400 font-mono">{item.email}</p>
+                          <p className="text-[11px] text-slate-500 font-mono">{item.email}</p>
                         </div>
                       </div>
                     </td>
@@ -165,21 +165,21 @@ export const UsersPage = () => {
                       <Badge role={item.role} size="sm" />
                     </td>
                     <td className="py-3.5 px-6">
-                      <div className="text-slate-300">{item.branch || 'Headquarters'}</div>
-                      <div className="text-[10px] text-slate-400">{item.companyName}</div>
+                      <div className="text-slate-900 font-medium">{item.branch || 'Headquarters'}</div>
+                      <div className="text-[10px] text-slate-500">{item.companyName}</div>
                     </td>
-                    <td className="py-3.5 px-6 font-mono text-slate-400">
+                    <td className="py-3.5 px-6 font-mono text-slate-500">
                       {formatDate(item.createdAt)}
                     </td>
                     <td className="py-3.5 px-6 text-right">
                       {item.isActive ? (
-                        <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-medium">
-                          <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span className="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                           <span>Active</span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-[11px] text-rose-400 font-medium">
-                          <XCircle className="w-3.5 h-3.5" />
+                        <span className="inline-flex items-center gap-1 text-[11px] text-rose-700 font-semibold bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
+                          <XCircle className="w-3.5 h-3.5 text-rose-600" />
                           <span>Inactive</span>
                         </span>
                       )}

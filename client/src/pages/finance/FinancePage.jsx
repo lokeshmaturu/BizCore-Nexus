@@ -5,17 +5,12 @@ import {
   DollarSign,
   CreditCard,
   FileText,
-  TrendingUp,
   AlertTriangle,
   CheckCircle2,
   Clock,
   Plus,
   Search,
   Printer,
-  FileCheck,
-  ShieldCheck,
-  ArrowUpRight,
-  Send,
   Download,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -121,14 +116,14 @@ export const FinancePage = () => {
   });
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in text-slate-900">
       {/* Header Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             Finance & <span className="gradient-text">Accounts Receivable</span>
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             Invoicing engine, accounts receivable aging, and corporate wire remittance ledger.
           </p>
         </div>
@@ -140,82 +135,82 @@ export const FinancePage = () => {
 
       {/* Financial AR Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-5 border-slate-800 bg-slate-900/70 space-y-2">
-          <div className="flex items-center justify-between text-slate-400 text-xs">
-            <span>Total Invoiced</span>
-            <DollarSign className="w-4 h-4 text-brand-400" />
+        <Card className="p-5 border-slate-200/90 bg-white space-y-2 shadow-xs">
+          <div className="flex items-center justify-between text-slate-500 text-xs">
+            <span className="font-semibold uppercase tracking-wider text-[11px]">Total Invoiced</span>
+            <DollarSign className="w-4 h-4 text-brand-600" />
           </div>
-          <div className="text-xl font-bold text-white">
+          <div className="text-xl font-bold text-slate-900">
             {formatCurrency(analytics?.summary?.totalInvoiced || 131876)}
           </div>
-          <div className="text-[11px] text-slate-400">Consolidated gross billed volume</div>
+          <div className="text-[11px] text-slate-500">Consolidated gross billed volume</div>
         </Card>
 
-        <Card className="p-5 border-slate-800 bg-slate-900/70 space-y-2">
-          <div className="flex items-center justify-between text-slate-400 text-xs">
-            <span>Total Collected</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+        <Card className="p-5 border-slate-200/90 bg-white space-y-2 shadow-xs">
+          <div className="flex items-center justify-between text-slate-500 text-xs">
+            <span className="font-semibold uppercase tracking-wider text-[11px]">Total Collected</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
           </div>
-          <div className="text-xl font-bold text-emerald-400">
+          <div className="text-xl font-bold text-emerald-700">
             {formatCurrency(analytics?.summary?.totalCollected || 58816)}
           </div>
-          <div className="text-[11px] text-emerald-400/80 font-medium">
+          <div className="text-[11px] text-emerald-700 font-bold">
             Collection Rate: {analytics?.summary?.collectionRate || '44.6%'}
           </div>
         </Card>
 
-        <Card className="p-5 border-slate-800 bg-slate-900/70 space-y-2">
-          <div className="flex items-center justify-between text-slate-400 text-xs">
-            <span>Outstanding AR Balance</span>
-            <Clock className="w-4 h-4 text-amber-400" />
+        <Card className="p-5 border-slate-200/90 bg-white space-y-2 shadow-xs">
+          <div className="flex items-center justify-between text-slate-500 text-xs">
+            <span className="font-semibold uppercase tracking-wider text-[11px]">Outstanding AR Balance</span>
+            <Clock className="w-4 h-4 text-amber-600" />
           </div>
-          <div className="text-xl font-bold text-amber-400">
+          <div className="text-xl font-bold text-amber-800">
             {formatCurrency(analytics?.summary?.totalOutstanding || 73060)}
           </div>
-          <div className="text-[11px] text-slate-400">Receivables in Net-30/60 pipeline</div>
+          <div className="text-[11px] text-slate-500">Receivables in Net-30/60 pipeline</div>
         </Card>
 
-        <Card className="p-5 border-slate-800 bg-slate-900/70 space-y-2">
-          <div className="flex items-center justify-between text-slate-400 text-xs">
-            <span>Overdue Exposure</span>
-            <AlertTriangle className="w-4 h-4 text-rose-400" />
+        <Card className="p-5 border-slate-200/90 bg-white space-y-2 shadow-xs">
+          <div className="flex items-center justify-between text-slate-500 text-xs">
+            <span className="font-semibold uppercase tracking-wider text-[11px]">Overdue Exposure</span>
+            <AlertTriangle className="w-4 h-4 text-rose-600" />
           </div>
-          <div className="text-xl font-bold text-rose-400">
+          <div className="text-xl font-bold text-rose-700">
             {formatCurrency(analytics?.summary?.overdueTotal || 0)}
           </div>
-          <div className="text-[11px] text-slate-400">Past agreed payment grace period</div>
+          <div className="text-[11px] text-slate-500">Past agreed payment grace period</div>
         </Card>
       </div>
 
       {/* AR Aging Breakdown */}
       {analytics?.aging && (
-        <Card className="p-4 bg-slate-950/60 border-slate-850">
-          <div className="text-xs font-bold text-slate-300 mb-3 flex items-center justify-between">
+        <Card className="p-4 bg-white border-slate-200/90 shadow-xs">
+          <div className="text-xs font-bold text-slate-800 mb-3 flex items-center justify-between">
             <span>Accounts Receivable Aging Analysis</span>
-            <span className="text-[10px] text-brand-400 font-normal">Real-time credit risk ledger</span>
+            <span className="text-[10px] text-brand-700 font-bold">Real-time credit risk ledger</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-            <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
-              <div className="text-[10px] text-slate-400">Current (0-30 Days)</div>
-              <div className="text-sm font-bold text-emerald-400 mt-1">
+            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
+              <div className="text-[10px] text-slate-500 font-medium">Current (0-30 Days)</div>
+              <div className="text-sm font-bold text-emerald-700 mt-1">
                 {formatCurrency(analytics.aging.current)}
               </div>
             </div>
-            <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
-              <div className="text-[10px] text-slate-400">31 - 60 Days</div>
-              <div className="text-sm font-bold text-blue-400 mt-1">
+            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
+              <div className="text-[10px] text-slate-500 font-medium">31 - 60 Days</div>
+              <div className="text-sm font-bold text-blue-700 mt-1">
                 {formatCurrency(analytics.aging.thirtyToSixty)}
               </div>
             </div>
-            <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
-              <div className="text-[10px] text-slate-400">61 - 90 Days</div>
-              <div className="text-sm font-bold text-amber-400 mt-1">
+            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
+              <div className="text-[10px] text-slate-500 font-medium">61 - 90 Days</div>
+              <div className="text-sm font-bold text-amber-800 mt-1">
                 {formatCurrency(analytics.aging.sixtyToNinety)}
               </div>
             </div>
-            <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
-              <div className="text-[10px] text-slate-400">90+ Days (High Risk)</div>
-              <div className="text-sm font-bold text-rose-400 mt-1">
+            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
+              <div className="text-[10px] text-slate-500 font-medium">90+ Days (High Risk)</div>
+              <div className="text-sm font-bold text-rose-700 mt-1">
                 {formatCurrency(analytics.aging.overNinety)}
               </div>
             </div>
@@ -224,12 +219,12 @@ export const FinancePage = () => {
       )}
 
       {/* Filters & Search */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div className="flex items-center gap-2">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500"
+            className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-brand-600 font-medium"
           >
             <option value="All">All Invoices</option>
             <option value="Unpaid">Unpaid</option>
@@ -240,13 +235,13 @@ export const FinancePage = () => {
         </div>
 
         <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search invoice number or client..."
-            className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500"
+            className="w-full bg-white border border-slate-300 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-600 shadow-2xs"
           />
         </div>
       </div>
@@ -254,53 +249,53 @@ export const FinancePage = () => {
       {/* Invoices List */}
       <div className="space-y-3">
         {filteredInvoices.length === 0 ? (
-          <div className="text-center py-12 text-slate-500 text-xs">
+          <div className="text-center py-12 text-slate-400 text-xs">
             No invoices found matching criteria.
           </div>
         ) : (
           filteredInvoices.map((inv) => (
             <Card
               key={inv._id}
-              className="p-5 border-slate-800 hover:border-slate-700 transition-all bg-slate-900/60"
+              className="p-5 border-slate-200 hover:border-brand-300 transition-all bg-white shadow-xs"
             >
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-brand-400 shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-600 shrink-0">
                     <FileText className="w-5 h-5" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-sm font-bold text-white">
+                      <span className="font-mono text-sm font-bold text-slate-900">
                         {inv.invoiceNumber}
                       </span>
                       <span
                         className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase ${
                           inv.status === 'Paid'
-                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             : inv.status === 'Partially Paid'
-                            ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
                             : inv.status === 'Overdue'
-                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                            : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                            ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                            : 'bg-amber-50 text-amber-800 border border-amber-200'
                         }`}
                       >
                         {inv.status}
                       </span>
                     </div>
-                    <div className="text-xs text-slate-300 mt-0.5">
-                      Client: <span className="text-white font-semibold">{inv.customer?.companyName}</span> • Due Date: {formatDate(inv.dueDate)}
+                    <div className="text-xs text-slate-600 mt-0.5">
+                      Client: <span className="text-slate-900 font-bold">{inv.customer?.companyName}</span> • Due Date: {formatDate(inv.dueDate)}
                     </div>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-6">
                   <div className="text-right">
-                    <div className="text-[10px] text-slate-400">Grand Total:</div>
-                    <div className="text-sm font-bold text-white">{formatCurrency(inv.grandTotal)}</div>
+                    <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Grand Total:</div>
+                    <div className="text-sm font-bold text-slate-900">{formatCurrency(inv.grandTotal)}</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-[10px] text-slate-400">Balance Due:</div>
-                    <div className="text-sm font-bold text-amber-400">{formatCurrency(inv.balanceDue)}</div>
+                    <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Balance Due:</div>
+                    <div className="text-sm font-bold text-amber-700">{formatCurrency(inv.balanceDue)}</div>
                   </div>
 
                   <div className="flex items-center gap-2">
@@ -364,13 +359,13 @@ export const FinancePage = () => {
       >
         <form onSubmit={handleCreateInvoiceSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">
               Select Wholesale Order
             </label>
             <select
               value={invoiceForm.orderId}
               onChange={(e) => setInvoiceForm({ ...invoiceForm, orderId: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-brand-500"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-600"
               required
             >
               <option value="">-- Choose Order to Bill --</option>
@@ -403,7 +398,7 @@ export const FinancePage = () => {
             onChange={(e) => setInvoiceForm({ ...invoiceForm, notes: e.target.value })}
           />
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
             <Button variant="secondary" onClick={() => setIsInvoiceModalOpen(false)}>
               Cancel
             </Button>
@@ -420,12 +415,12 @@ export const FinancePage = () => {
         maxWidth="max-w-md"
       >
         <form onSubmit={handleRecordPaymentSubmit} className="space-y-4">
-          <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-850 text-xs space-y-1">
-            <div className="text-slate-400">
-              Customer: <span className="text-white font-semibold">{selectedInvoiceForPayment?.customer?.companyName}</span>
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1 shadow-2xs">
+            <div className="text-slate-600">
+              Customer: <span className="text-slate-900 font-bold">{selectedInvoiceForPayment?.customer?.companyName}</span>
             </div>
-            <div className="text-slate-400">
-              Outstanding Balance: <span className="text-amber-400 font-bold">{formatCurrency(selectedInvoiceForPayment?.balanceDue)}</span>
+            <div className="text-slate-600">
+              Outstanding Balance: <span className="text-amber-800 font-bold">{formatCurrency(selectedInvoiceForPayment?.balanceDue)}</span>
             </div>
           </div>
 
@@ -440,13 +435,13 @@ export const FinancePage = () => {
           />
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">
               Payment Method
             </label>
             <select
               value={paymentForm.paymentMethod}
               onChange={(e) => setPaymentForm({ ...paymentForm, paymentMethod: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-brand-500"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-600"
             >
               <option value="Bank Wire">Bank Wire</option>
               <option value="Corporate Card">Corporate Card</option>
@@ -462,7 +457,7 @@ export const FinancePage = () => {
             required
           />
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
             <Button variant="secondary" onClick={() => setSelectedInvoiceForPayment(null)}>
               Cancel
             </Button>
@@ -480,13 +475,13 @@ export const FinancePage = () => {
       >
         {selectedPrintInvoice && (
           <div className="space-y-6">
-            <div className="p-8 rounded-2xl bg-white text-slate-900 space-y-6 font-sans">
+            <div className="p-8 rounded-2xl bg-white border border-slate-200 text-slate-900 space-y-6 font-sans shadow-sm">
               <div className="flex items-center justify-between border-b-2 border-slate-900 pb-4">
                 <div>
                   <h2 className="text-2xl font-black tracking-tight text-slate-900">
                     BIZCORE NEXUS ENTERPRISE
                   </h2>
-                  <p className="text-xs text-slate-600">Distribution & Wholesale Logistics Operating System</p>
+                  <p className="text-xs text-slate-500">Distribution & Wholesale Logistics Operating System</p>
                 </div>
                 <div className="text-right font-mono">
                   <div className="text-xs font-bold text-slate-500">INVOICE NO</div>
@@ -498,8 +493,8 @@ export const FinancePage = () => {
                 <div>
                   <div className="font-bold text-slate-500 uppercase tracking-wider mb-1">BILLED TO:</div>
                   <div className="font-bold text-slate-900">{selectedPrintInvoice.customer?.companyName}</div>
-                  <div className="text-slate-600">{selectedPrintInvoice.customer?.email}</div>
-                  <div className="text-slate-600">Payment Terms: {selectedPrintInvoice.paymentTerms}</div>
+                  <div className="text-slate-500">{selectedPrintInvoice.customer?.email}</div>
+                  <div className="text-slate-500">Payment Terms: {selectedPrintInvoice.paymentTerms}</div>
                 </div>
                 <div className="text-right">
                   <div><span className="font-bold">Date of Issue:</span> {formatDate(selectedPrintInvoice.issueDate)}</div>
@@ -510,7 +505,7 @@ export const FinancePage = () => {
 
               {/* Items Table */}
               <table className="w-full text-left text-xs border border-slate-200">
-                <thead className="bg-slate-100 text-slate-700 font-bold">
+                <thead className="bg-slate-50 text-slate-700 font-bold">
                   <tr>
                     <th className="p-2.5">Item Description</th>
                     <th className="p-2.5 text-center">Qty</th>
@@ -545,7 +540,7 @@ export const FinancePage = () => {
                     <span>Grand Total:</span>
                     <span>${selectedPrintInvoice.grandTotal?.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between font-bold text-xs text-amber-600">
+                  <div className="flex justify-between font-bold text-xs text-amber-700">
                     <span>Balance Due:</span>
                     <span>${selectedPrintInvoice.balanceDue?.toLocaleString()}</span>
                   </div>

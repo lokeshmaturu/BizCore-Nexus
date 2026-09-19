@@ -19,7 +19,6 @@ import {
   Radio,
   Zap,
   ArrowRight,
-  Command,
   X,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -277,7 +276,7 @@ export const CommandPalette = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={() => dispatch(setCommandPaletteOpen(false))}
-          className="fixed inset-0 bg-slate-950/80 backdrop-blur-md"
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs"
         />
 
         {/* Modal Window */}
@@ -286,11 +285,11 @@ export const CommandPalette = () => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -20 }}
           transition={{ duration: 0.15 }}
-          className="relative w-full max-w-2xl bg-slate-900/95 border border-slate-700/80 rounded-3xl shadow-2xl overflow-hidden glass-panel z-10"
+          className="relative w-full max-w-2xl bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden z-10 text-slate-900"
         >
           {/* Search Header */}
-          <div className="flex items-center px-4 py-3.5 border-b border-slate-800/80">
-            <Search className="w-5 h-5 text-brand-400 mr-3 shrink-0" />
+          <div className="flex items-center px-4 py-3.5 border-b border-slate-100 bg-slate-50/50">
+            <Search className="w-5 h-5 text-brand-600 mr-3 shrink-0" />
             <input
               ref={inputRef}
               type="text"
@@ -301,17 +300,17 @@ export const CommandPalette = () => {
               }}
               onKeyDown={handleInputKeyDown}
               placeholder="Type a command, search modules, or fire an action..."
-              className="w-full bg-transparent text-sm text-white placeholder-slate-500 focus:outline-none"
+              className="w-full bg-transparent text-sm text-slate-900 placeholder-slate-400 focus:outline-none"
             />
             {query && (
               <button
                 onClick={() => setQuery('')}
-                className="text-slate-400 hover:text-white p-1 rounded-lg mr-2"
+                className="text-slate-400 hover:text-slate-700 p-1 rounded-lg mr-2"
               >
                 <X className="w-4 h-4" />
               </button>
             )}
-            <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono text-slate-400 bg-slate-800 rounded border border-slate-700">
+            <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono text-slate-500 bg-white rounded border border-slate-200 shadow-2xs">
               ESC
             </kbd>
           </div>
@@ -319,7 +318,7 @@ export const CommandPalette = () => {
           {/* Results List */}
           <div className="max-h-80 overflow-y-auto p-2 space-y-1">
             {filteredItems.length === 0 ? (
-              <div className="py-10 text-center text-slate-500 text-xs">
+              <div className="py-10 text-center text-slate-400 text-xs">
                 No matching commands found for "{query}".
               </div>
             ) : (
@@ -334,33 +333,33 @@ export const CommandPalette = () => {
                     onMouseEnter={() => setSelectedIndex(index)}
                     className={`flex items-center justify-between px-3.5 py-2.5 rounded-2xl cursor-pointer transition-all ${
                       isSelected
-                        ? 'bg-gradient-to-r from-brand-600/30 to-brand-500/20 text-white border border-brand-500/40 font-semibold'
-                        : 'text-slate-300 hover:bg-slate-800/60 border border-transparent'
+                        ? 'bg-brand-50 text-brand-900 border border-brand-200 font-semibold'
+                        : 'text-slate-700 hover:bg-slate-50 border border-transparent'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className={`w-8 h-8 rounded-xl flex items-center justify-center ${
                           isSelected
-                            ? 'bg-brand-500 text-white shadow-md shadow-brand-500/30'
-                            : 'bg-slate-800 text-slate-400'
+                            ? 'bg-brand-600 text-white shadow-xs'
+                            : 'bg-slate-100 text-slate-500'
                         }`}
                       >
                         <Icon className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-white">{item.title}</p>
+                        <p className="text-xs font-bold text-slate-900">{item.title}</p>
                         <span className="text-[10px] text-slate-400">{item.category}</span>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
                       {item.shortcut && (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-slate-400">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-500">
                           {item.shortcut}
                         </span>
                       )}
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
                     </div>
                   </div>
                 );
@@ -369,27 +368,27 @@ export const CommandPalette = () => {
           </div>
 
           {/* Footer Guide */}
-          <div className="px-4 py-2.5 bg-slate-950/80 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+          <div className="px-4 py-2.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
             <div className="flex items-center gap-3">
               <span>
-                <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">
+                <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-200 text-slate-600 font-mono text-[10px] shadow-2xs">
                   ↑
                 </kbd>{' '}
-                <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">
+                <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-200 text-slate-600 font-mono text-[10px] shadow-2xs">
                   ↓
                 </kbd>{' '}
                 to navigate
               </span>
               <span>
-                <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">
+                <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-200 text-slate-600 font-mono text-[10px] shadow-2xs">
                   ↵
                 </kbd>{' '}
                 to select
               </span>
             </div>
-            <div className="flex items-center gap-1.5 text-brand-400 font-semibold">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Universal Command Center (Phase 6)</span>
+            <div className="flex items-center gap-1.5 text-brand-700 font-semibold">
+              <Sparkles className="w-3.5 h-3.5 text-brand-600" />
+              <span>Universal Command Center</span>
             </div>
           </div>
         </motion.div>

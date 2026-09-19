@@ -144,19 +144,19 @@ export const ProcurementPage = () => {
   );
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in text-slate-900">
       {/* Header Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-black text-white tracking-tight">
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
               Procurement & <span className="gradient-text">Supply Operations</span>
             </h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30 flex items-center gap-1 font-semibold">
-              <Sparkles className="w-3 h-3 text-brand-400" /> AI Replenishment
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200 flex items-center gap-1 font-semibold">
+              <Sparkles className="w-3 h-3 text-brand-600" /> AI Replenishment
             </span>
           </div>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             Vendor matrix, automated PO generation, and inbound freight delivery pipelines.
           </p>
         </div>
@@ -167,7 +167,7 @@ export const ProcurementPage = () => {
             leftIcon={RefreshCw}
             isLoading={isReordering}
             onClick={handleAIAutoReorder}
-            className="bg-brand-500/10 border-brand-500/30 text-brand-300 hover:bg-brand-500/20"
+            className="bg-brand-50 border-brand-200 text-brand-700 hover:bg-brand-100"
           >
             1-Click AI Auto Reorder
           </Button>
@@ -185,24 +185,24 @@ export const ProcurementPage = () => {
       </div>
 
       {/* Tabs & Search */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-800 pb-4">
-        <div className="flex items-center gap-2 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-xl border border-slate-200">
           <button
             onClick={() => setActiveTab('orders')}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
               activeTab === 'orders'
-                ? 'bg-brand-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-brand-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             Purchase Orders ({orders.length})
           </button>
           <button
             onClick={() => setActiveTab('suppliers')}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
               activeTab === 'suppliers'
-                ? 'bg-brand-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-brand-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             Vendors Directory ({suppliers.length})
@@ -210,13 +210,13 @@ export const ProcurementPage = () => {
         </div>
 
         <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={activeTab === 'orders' ? 'Search PO number...' : 'Search vendor name...'}
-            className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500"
+            className="w-full bg-white border border-slate-300 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-600 shadow-2xs"
           />
         </div>
       </div>
@@ -226,16 +226,16 @@ export const ProcurementPage = () => {
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {filteredOrders.map((po) => (
-              <Card key={po._id} className="p-5 space-y-4 border-slate-800 hover:border-slate-700 transition-all">
+              <Card key={po._id} className="p-5 space-y-4 border-slate-200 hover:border-brand-300 transition-all shadow-xs">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold text-brand-400">{po.poNumber}</span>
+                  <span className="font-mono text-xs font-bold text-brand-700">{po.poNumber}</span>
                   <span
-                    className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${
+                    className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${
                       po.status === 'Received'
-                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                         : po.status === 'In Transit'
-                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                        : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                        ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                        : 'bg-blue-50 text-blue-700 border border-blue-200'
                     }`}
                   >
                     {po.status}
@@ -243,33 +243,33 @@ export const ProcurementPage = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-bold text-white truncate">
+                  <h3 className="text-sm font-bold text-slate-900 truncate">
                     {po.supplier?.name || 'Primary Vendor'}
                   </h3>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="text-xs text-slate-500 mt-0.5">
                     Destination: {po.destinationBranch}
                   </p>
                 </div>
 
-                <div className="space-y-1.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-850">
-                  <div className="text-[11px] text-slate-400 flex items-center justify-between">
+                <div className="space-y-1.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 shadow-2xs">
+                  <div className="text-[11px] text-slate-500 flex items-center justify-between">
                     <span>Items ({po.items?.length || 0}):</span>
-                    <span className="font-semibold text-white">
+                    <span className="font-bold text-slate-800">
                       {po.items?.map((i) => i.name).join(', ') || 'Wholesale SKUs'}
                     </span>
                   </div>
-                  <div className="text-[11px] text-slate-400 flex items-center justify-between">
+                  <div className="text-[11px] text-slate-500 flex items-center justify-between">
                     <span>Total Amount:</span>
-                    <span className="font-bold text-emerald-400">{formatCurrency(po.totalAmount)}</span>
+                    <span className="font-bold text-emerald-700">{formatCurrency(po.totalAmount)}</span>
                   </div>
-                  <div className="text-[11px] text-slate-400 flex items-center justify-between">
+                  <div className="text-[11px] text-slate-500 flex items-center justify-between">
                     <span>Expected Date:</span>
-                    <span className="text-slate-300">{formatDate(po.expectedDeliveryDate)}</span>
+                    <span className="text-slate-800 font-medium">{formatDate(po.expectedDeliveryDate)}</span>
                   </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                   <Button
                     size="sm"
                     variant="secondary"
@@ -307,7 +307,7 @@ export const ProcurementPage = () => {
                     </Button>
                   )}
                   {po.status === 'Received' && (
-                    <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
+                    <span className="text-xs text-emerald-700 font-bold flex items-center gap-1">
                       <CheckCircle2 className="w-3.5 h-3.5" /> Inventory Restocked
                     </span>
                   )}
@@ -319,24 +319,24 @@ export const ProcurementPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filteredSuppliers.map((supp) => (
-            <Card key={supp._id} className="p-5 space-y-4 border-slate-800">
+            <Card key={supp._id} className="p-5 space-y-4 border-slate-200/90 shadow-xs">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold text-slate-400">{supp.code}</span>
-                <span className="flex items-center gap-1 text-xs font-semibold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
-                  <Star className="w-3 h-3 fill-amber-400" /> {supp.rating}
+                <span className="font-mono text-xs font-bold text-slate-500">{supp.code}</span>
+                <span className="flex items-center gap-1 text-xs font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                  <Star className="w-3 h-3 fill-amber-500 text-amber-500" /> {supp.rating}
                 </span>
               </div>
 
               <div>
-                <h3 className="text-sm font-bold text-white">{supp.name}</h3>
-                <span className="text-xs text-brand-400 font-medium">{supp.category}</span>
+                <h3 className="text-sm font-bold text-slate-900">{supp.name}</h3>
+                <span className="text-xs text-brand-700 font-semibold">{supp.category}</span>
               </div>
 
-              <div className="text-xs text-slate-400 space-y-1">
-                <div>Contact: <span className="text-slate-200">{supp.contactPerson}</span></div>
-                <div>Email: <span className="text-slate-200">{supp.email}</span></div>
-                <div>Lead Time: <span className="text-slate-200">{supp.leadTimeDays} Days</span></div>
-                <div>Terms: <span className="text-slate-200">{supp.paymentTerms}</span></div>
+              <div className="text-xs text-slate-500 space-y-1">
+                <div>Contact: <span className="text-slate-800 font-medium">{supp.contactPerson}</span></div>
+                <div>Email: <span className="text-slate-800 font-medium">{supp.email}</span></div>
+                <div>Lead Time: <span className="text-slate-800 font-medium">{supp.leadTimeDays} Days</span></div>
+                <div>Terms: <span className="text-slate-800 font-medium">{supp.paymentTerms}</span></div>
               </div>
             </Card>
           ))}
@@ -352,13 +352,13 @@ export const ProcurementPage = () => {
       >
         <form onSubmit={handleCreatePOSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">
               Select Vendor / Supplier
             </label>
             <select
               value={poForm.supplierId}
               onChange={(e) => setPoForm({ ...poForm, supplierId: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-brand-500"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-600"
               required
             >
               <option value="">-- Choose Approved Vendor --</option>
@@ -371,7 +371,7 @@ export const ProcurementPage = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">
               Select Product SKU to Reorder
             </label>
             <select
@@ -384,7 +384,7 @@ export const ProcurementPage = () => {
                   unitCost: p ? p.costPrice : 100,
                 });
               }}
-              className="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-brand-500"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-600"
               required
             >
               <option value="">-- Choose Product SKU --</option>
@@ -422,7 +422,7 @@ export const ProcurementPage = () => {
             onChange={(e) => setPoForm({ ...poForm, notes: e.target.value })}
           />
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
             <Button variant="secondary" onClick={() => setIsPOModalOpen(false)}>
               Cancel
             </Button>
@@ -448,13 +448,13 @@ export const ProcurementPage = () => {
           />
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">
               Category
             </label>
             <select
               value={supplierForm.category}
               onChange={(e) => setSupplierForm({ ...supplierForm, category: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-brand-500"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-brand-600"
             >
               <option value="Electronics & Hardware">Electronics & Hardware</option>
               <option value="Raw Materials & Metals">Raw Materials & Metals</option>
@@ -500,7 +500,7 @@ export const ProcurementPage = () => {
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
             <Button variant="secondary" onClick={() => setIsSupplierModalOpen(false)}>
               Cancel
             </Button>

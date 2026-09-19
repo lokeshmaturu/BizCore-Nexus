@@ -39,29 +39,29 @@ export const ForgotPasswordPage = () => {
       initial={{ opacity: 0, scale: 0.98, y: 8 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="glass-panel bg-slate-900/90 border border-slate-700/80 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6"
+      className="bg-white border border-slate-200 rounded-3xl p-8 sm:p-10 shadow-xl space-y-6"
     >
       {/* Header */}
       <div className="space-y-1.5 text-center sm:text-left">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-[11px] font-semibold text-brand-300 mb-1">
-          <KeyRound className="w-3.5 h-3.5 text-brand-400" />
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-50 border border-brand-200 text-[11px] font-semibold text-brand-700 mb-1">
+          <KeyRound className="w-3.5 h-3.5 text-brand-600" />
           <span>Credential Recovery</span>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
           Reset Password
         </h2>
-        <p className="text-xs sm:text-sm text-slate-400">
+        <p className="text-xs sm:text-sm text-slate-500">
           Enter your corporate email address to receive secure password restoration instructions.
         </p>
       </div>
 
       {isSubmitted ? (
-        <div className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-4 animate-fade-in">
-          <div className="w-12 h-12 mx-auto rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+        <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-4 animate-fade-in">
+          <div className="w-12 h-12 mx-auto rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
             <CheckCircle2 className="w-7 h-7" />
           </div>
-          <h3 className="text-base font-bold text-slate-100">Recovery Link Sent</h3>
-          <p className="text-xs text-slate-300">
+          <h3 className="text-base font-bold text-slate-900">Recovery Link Sent</h3>
+          <p className="text-xs text-slate-600">
             If an active enterprise account corresponds to this address, a secured token link has been generated.
           </p>
           <Link to={ROUTES.LOGIN} className="inline-block mt-2">
@@ -98,10 +98,10 @@ export const ForgotPasswordPage = () => {
             Dispatch Recovery Token
           </Button>
 
-          <div className="pt-2 border-t border-slate-800/80 text-center">
+          <div className="pt-2 border-t border-slate-100 text-center">
             <Link
               to={ROUTES.LOGIN}
-              className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Sign In</span>

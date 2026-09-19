@@ -102,26 +102,26 @@ export const ModulePlaceholderPage = () => {
         breadcrumbs={['Nexus', 'Modules', config.title.split(' ')[0]]}
       />
 
-      <div className="glass-panel bg-slate-900/90 border border-slate-800 rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden shadow-sm">
         {/* Glow */}
-        <div className="absolute -right-10 -top-10 w-72 h-72 bg-brand-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -right-10 -top-10 w-72 h-72 bg-brand-100/50 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-2xl mx-auto space-y-6 relative z-10">
           <div
-            className={`w-16 h-16 mx-auto rounded-2xl ${config.bgColor} border ${config.borderColor} ${config.color} flex items-center justify-center shadow-xl`}
+            className={`w-16 h-16 mx-auto rounded-2xl ${config.bgColor} border ${config.borderColor} ${config.color} flex items-center justify-center shadow-md`}
           >
             <Icon className="w-8 h-8" />
           </div>
 
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-xs font-semibold text-brand-300">
-              <Sparkles className="w-3.5 h-3.5 text-brand-400" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-xs font-semibold text-brand-700">
+              <Sparkles className="w-3.5 h-3.5 text-brand-600" />
               <span>{config.phase}</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
               {config.title}
             </h2>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            <p className="text-sm text-slate-500 leading-relaxed">
               The foundational RBAC schema, data models, and API bridges for this module are established in Phase 1. Complete operational workflows will expand in Phase 2.
             </p>
           </div>
@@ -131,12 +131,12 @@ export const ModulePlaceholderPage = () => {
             {config.stats.map((stat, idx) => (
               <div
                 key={idx}
-                className="p-4 rounded-xl bg-slate-950/60 border border-slate-800/80 text-left space-y-1"
+                className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-left space-y-1"
               >
-                <p className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">
+                <p className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">
                   {stat.label}
                 </p>
-                <p className="text-lg font-bold text-white font-mono">{stat.value}</p>
+                <p className="text-lg font-bold text-slate-900 font-mono">{stat.value}</p>
               </div>
             ))}
           </div>

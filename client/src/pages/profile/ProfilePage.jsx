@@ -79,7 +79,7 @@ export const ProfilePage = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Identity Snapshot Card */}
-        <div className="glass-panel rounded-3xl border border-slate-800 p-6 space-y-6 text-center lg:text-left h-fit">
+        <div className="rounded-3xl border border-slate-200 bg-white shadow-sm p-6 space-y-6 text-center lg:text-left h-fit">
           <div className="flex flex-col items-center lg:items-start gap-4">
             <div className="relative">
               <Avatar
@@ -87,59 +87,59 @@ export const ProfilePage = () => {
                 src={user?.profileImage}
                 size="2xl"
                 status="online"
-                className="w-24 h-24 text-2xl shadow-xl"
+                className="w-24 h-24 text-2xl shadow-md border-2 border-white"
               />
             </div>
 
             <div className="space-y-1 text-center lg:text-left">
-              <h2 className="text-xl font-bold text-white">{fullName}</h2>
-              <p className="text-xs text-slate-400 font-mono">{email}</p>
+              <h2 className="text-xl font-bold text-slate-900">{fullName}</h2>
+              <p className="text-xs text-slate-500 font-mono">{email}</p>
               <div className="pt-2">
                 <Badge role={role} size="md" />
               </div>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-800/80 space-y-3 text-xs">
-            <div className="flex items-center justify-between text-slate-300">
-              <span className="text-slate-400 flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-brand-400" />
+          <div className="pt-4 border-t border-slate-100 space-y-3 text-xs">
+            <div className="flex items-center justify-between text-slate-600">
+              <span className="text-slate-500 flex items-center gap-1.5">
+                <Building2 className="w-3.5 h-3.5 text-brand-600" />
                 <span>Company</span>
               </span>
-              <span className="font-semibold text-white">{companyName}</span>
+              <span className="font-semibold text-slate-900">{companyName}</span>
             </div>
 
-            <div className="flex items-center justify-between text-slate-300">
-              <span className="text-slate-400 flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="flex items-center justify-between text-slate-600">
+              <span className="text-slate-500 flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-emerald-600" />
                 <span>Assigned Node</span>
               </span>
-              <span className="font-semibold text-white">{branch || 'HQ'}</span>
+              <span className="font-semibold text-slate-900">{branch || 'HQ'}</span>
             </div>
 
-            <div className="flex items-center justify-between text-slate-300">
-              <span className="text-slate-400 flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-purple-400" />
+            <div className="flex items-center justify-between text-slate-600">
+              <span className="text-slate-500 flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-purple-600" />
                 <span>Joined Date</span>
               </span>
-              <span className="font-mono text-slate-200">
+              <span className="font-mono text-slate-700">
                 {formatDate(user?.createdAt || new Date())}
               </span>
             </div>
 
-            <div className="flex items-center justify-between text-slate-300">
-              <span className="text-slate-400 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="flex items-center justify-between text-slate-600">
+              <span className="text-slate-500 flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                 <span>Status</span>
               </span>
-              <span className="text-emerald-400 font-semibold uppercase tracking-wider text-[10px] bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+              <span className="text-emerald-700 font-semibold uppercase tracking-wider text-[10px] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                 Active
               </span>
             </div>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 text-xs text-slate-400 leading-relaxed">
-            <p className="font-semibold text-slate-200 mb-1">RBAC Tier Authority</p>
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 leading-relaxed">
+            <p className="font-semibold text-slate-900 mb-1">RBAC Tier Authority</p>
             <p className="text-[11px]">
               {ROLE_DESCRIPTIONS[role] || 'Standard enterprise operational access.'}
             </p>
@@ -147,13 +147,13 @@ export const ProfilePage = () => {
         </div>
 
         {/* Right Column: Editable Parameters Form */}
-        <div className="lg:col-span-2 glass-panel rounded-3xl border border-slate-800 p-6 sm:p-8 space-y-6">
-          <div className="border-b border-slate-800/80 pb-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-brand-400" />
+        <div className="lg:col-span-2 rounded-3xl border border-slate-200 bg-white shadow-sm p-6 sm:p-8 space-y-6">
+          <div className="border-b border-slate-100 pb-4">
+            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-brand-600" />
               <span>Personal & Branch Information</span>
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               Update your corporate identity variables synced across the cluster.
             </p>
           </div>
@@ -204,8 +204,8 @@ export const ProfilePage = () => {
             />
 
             {/* Readonly Security Credentials */}
-            <div className="pt-3 border-t border-slate-800/80 space-y-4">
-              <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <div className="pt-3 border-t border-slate-100 space-y-4">
+              <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 Immutable Security Parameters
               </h4>
 
@@ -215,7 +215,7 @@ export const ProfilePage = () => {
                   value={email}
                   disabled
                   leftIcon={Mail}
-                  className="opacity-70 cursor-not-allowed bg-slate-950"
+                  className="opacity-75 cursor-not-allowed bg-slate-50 text-slate-700"
                   helperText="Contact SuperAdmin to alter verified corporate email."
                 />
 
@@ -224,7 +224,7 @@ export const ProfilePage = () => {
                   value={ROLE_LABELS[role] || role}
                   disabled
                   leftIcon={Shield}
-                  className="opacity-70 cursor-not-allowed bg-slate-950 text-brand-300 font-semibold"
+                  className="opacity-75 cursor-not-allowed bg-slate-50 text-brand-700 font-semibold"
                   helperText="RBAC privilege managed by security policies."
                 />
               </div>

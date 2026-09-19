@@ -16,29 +16,29 @@ export const UnauthorizedPage = () => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
-        className="max-w-lg w-full glass-panel bg-slate-900/90 border border-rose-500/30 rounded-3xl p-8 sm:p-10 text-center shadow-2xl space-y-6"
+        className="max-w-lg w-full bg-white border border-rose-200 rounded-3xl p-8 sm:p-10 text-center shadow-xl space-y-6"
       >
-        <div className="w-16 h-16 mx-auto rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center shadow-lg shadow-rose-500/10">
+        <div className="w-16 h-16 mx-auto rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center shadow-md shadow-rose-500/10">
           <ShieldAlert className="w-8 h-8" />
         </div>
 
         <div className="space-y-2">
-          <span className="text-xs uppercase font-mono tracking-widest text-rose-400 font-bold bg-rose-500/10 px-3 py-1 rounded-full border border-rose-500/20">
+          <span className="text-xs uppercase font-mono tracking-widest text-rose-700 font-bold bg-rose-50 px-3 py-1 rounded-full border border-rose-200">
             Error 403 – Access Forbidden
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             Insufficient RBAC Clearance
           </h1>
-          <p className="text-sm text-slate-400 leading-relaxed max-w-sm mx-auto">
+          <p className="text-sm text-slate-500 leading-relaxed max-w-sm mx-auto">
             Your current security role{' '}
-            <strong className="text-brand-300">({ROLE_LABELS[role] || role || 'User'})</strong> does
+            <strong className="text-brand-700 font-semibold">({ROLE_LABELS[role] || role || 'User'})</strong> does
             not possess the required permissions to access this enterprise module.
           </p>
         </div>
 
-        <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 text-xs text-slate-400 text-left space-y-1">
-          <p className="font-semibold text-slate-300 flex items-center gap-1.5">
-            <Lock className="w-3.5 h-3.5 text-rose-400" />
+        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 text-left space-y-1">
+          <p className="font-semibold text-slate-900 flex items-center gap-1.5">
+            <Lock className="w-3.5 h-3.5 text-rose-600" />
             <span>Access Policy Advisory</span>
           </p>
           <p className="text-[11px] leading-normal">

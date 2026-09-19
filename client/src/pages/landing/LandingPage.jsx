@@ -125,54 +125,54 @@ export const LandingPage = () => {
   const selectedPreview = PREVIEW_TABS.find((t) => t.id === activePreview) || PREVIEW_TABS[0];
 
   return (
-    <div className="min-h-screen bg-[#070b14] text-slate-100 overflow-x-hidden selection:bg-brand-500 selection:text-white font-sans">
+    <div className="min-h-screen bg-slate-50 text-slate-800 overflow-x-hidden selection:bg-brand-500 selection:text-white font-sans">
       {/* Dynamic Background Glow Effects */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-brand-600/20 via-indigo-600/10 to-transparent rounded-full blur-3xl" />
-        <div className="absolute top-1/3 -left-40 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl" />
-        <div className="absolute top-2/3 -right-40 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl" />
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-brand-200/40 via-indigo-100/30 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/3 -left-40 w-96 h-96 bg-purple-100/40 rounded-full blur-3xl" />
+        <div className="absolute top-2/3 -right-40 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl" />
       </div>
 
       {/* 1. Header Navigation Bar */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/80 border-b border-slate-800/80">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-slate-200/80 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-indigo-500 p-0.5 shadow-lg shadow-brand-500/20">
-              <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                <Layers className="w-5 h-5 text-brand-400 group-hover:rotate-12 transition-transform duration-300" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-indigo-600 p-0.5 shadow-md shadow-brand-500/20">
+              <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
+                <Layers className="w-5 h-5 text-brand-600 group-hover:rotate-12 transition-transform duration-300" />
               </div>
             </div>
             <div className="flex flex-col">
-              <span className="text-lg font-black tracking-tight text-white flex items-center gap-1.5">
+              <span className="text-lg font-black tracking-tight text-slate-900 flex items-center gap-1.5">
                 BizCore <span className="gradient-text">Nexus</span>
               </span>
-              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+              <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
                 Enterprise AI OS
               </span>
             </div>
           </Link>
 
           {/* Center Nav Links */}
-          <nav className="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-300">
-            <a href="#features" className="hover:text-brand-400 transition-colors">
+          <nav className="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-600">
+            <a href="#features" className="hover:text-brand-600 transition-colors">
               Platform Features
             </a>
-            <a href="#preview" className="hover:text-brand-400 transition-colors">
+            <a href="#preview" className="hover:text-brand-600 transition-colors">
               Live Console
             </a>
-            <a href="#roles" className="hover:text-brand-400 transition-colors">
+            <a href="#roles" className="hover:text-brand-600 transition-colors">
               RBAC Matrix
             </a>
-            <a href="#architecture" className="hover:text-brand-400 transition-colors">
+            <a href="#architecture" className="hover:text-brand-600 transition-colors">
               Architecture
             </a>
           </nav>
 
           {/* Right Actions */}
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-semibold text-emerald-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[11px] font-semibold text-emerald-700">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>Cluster Online</span>
             </div>
 
@@ -206,12 +206,12 @@ export const LandingPage = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-brand-500/30 text-xs font-semibold text-brand-300 shadow-xl shadow-brand-500/10"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-brand-200 text-xs font-semibold text-brand-700 shadow-sm"
         >
-          <Sparkles className="w-3.5 h-3.5 text-brand-400 animate-spin-slow" />
+          <Sparkles className="w-3.5 h-3.5 text-brand-600 animate-spin-slow" />
           <span>Next-Gen Enterprise Business Operating System</span>
-          <span className="text-slate-600">|</span>
-          <span className="text-slate-400">All 4 Phases Live & Operational</span>
+          <span className="text-slate-300">|</span>
+          <span className="text-slate-600">All 4 Phases Live & Operational</span>
         </motion.div>
 
         {/* Hero Title */}
@@ -219,7 +219,7 @@ export const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.1] max-w-5xl mx-auto"
+          className="text-4xl sm:text-6xl lg:text-7xl font-black text-slate-900 tracking-tight leading-[1.1] max-w-5xl mx-auto"
         >
           AI-Powered Business OS for{' '}
           <span className="gradient-text">Wholesale & Distribution</span>
@@ -230,7 +230,7 @@ export const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-base sm:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed"
+          className="text-base sm:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed"
         >
           Unify multi-branch warehouse inventory, autonomous supplier procurement, live freight carrier dispatching, and Net-30 commercial invoicing with real-time natural language intelligence.
         </motion.p>
@@ -243,15 +243,15 @@ export const LandingPage = () => {
           className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
         >
           <Link to={ROUTES.LOGIN} className="w-full sm:w-auto">
-            <button className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-600 via-brand-500 to-indigo-600 text-white font-bold text-sm shadow-xl shadow-brand-600/30 hover:shadow-brand-600/50 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+            <button className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm shadow-xl shadow-brand-600/25 hover:shadow-brand-600/40 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
               <span>Launch Enterprise Console</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </Link>
 
           <a href="#roles" className="w-full sm:w-auto">
-            <button className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-900/80 hover:bg-slate-850 border border-slate-700/80 text-slate-200 font-semibold text-sm hover:border-brand-500/40 transition-all flex items-center justify-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-brand-400" />
+            <button className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-sm hover:border-brand-300 shadow-sm transition-all flex items-center justify-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-brand-600" />
               <span>Explore Role-Based Access</span>
             </button>
           </a>
@@ -264,21 +264,21 @@ export const LandingPage = () => {
           transition={{ delay: 0.4 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-10 max-w-4xl mx-auto"
         >
-          <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-md">
-            <div className="text-2xl font-black text-white">$4.82M+</div>
-            <div className="text-xs text-slate-400 mt-0.5">Monthly Volume</div>
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
+            <div className="text-2xl font-black text-slate-900">$4.82M+</div>
+            <div className="text-xs text-slate-500 mt-0.5">Monthly Volume</div>
           </div>
-          <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-md">
-            <div className="text-2xl font-black text-emerald-400">99.99%</div>
-            <div className="text-xs text-slate-400 mt-0.5">Uptime SLA</div>
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
+            <div className="text-2xl font-black text-emerald-600">99.99%</div>
+            <div className="text-xs text-slate-500 mt-0.5">Uptime SLA</div>
           </div>
-          <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-md">
-            <div className="text-2xl font-black text-brand-400">&lt; 50ms</div>
-            <div className="text-xs text-slate-400 mt-0.5">API Latency</div>
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
+            <div className="text-2xl font-black text-brand-600">&lt; 50ms</div>
+            <div className="text-xs text-slate-500 mt-0.5">API Latency</div>
           </div>
-          <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-md">
-            <div className="text-2xl font-black text-purple-400">14 Hubs</div>
-            <div className="text-xs text-slate-400 mt-0.5">Regional Nodes</div>
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
+            <div className="text-2xl font-black text-purple-600">14 Hubs</div>
+            <div className="text-xs text-slate-500 mt-0.5">Regional Nodes</div>
           </div>
         </motion.div>
       </section>
@@ -286,8 +286,8 @@ export const LandingPage = () => {
       {/* 3. Interactive Live Console Preview */}
       <section id="preview" className="relative z-10 py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
         <div className="text-center space-y-3 mb-10">
-          <h2 className="text-xs font-bold text-brand-400 uppercase tracking-widest">Interactive Command Center</h2>
-          <p className="text-3xl font-black text-white tracking-tight">Explore the Operational Modules</p>
+          <h2 className="text-xs font-bold text-brand-600 uppercase tracking-widest">Interactive Command Center</h2>
+          <p className="text-3xl font-black text-slate-900 tracking-tight">Explore the Operational Modules</p>
         </div>
 
         {/* Tab Switcher */}
@@ -301,8 +301,8 @@ export const LandingPage = () => {
                 onClick={() => setActivePreview(tab.id)}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
                   isActive
-                    ? 'bg-gradient-to-r from-brand-600 to-indigo-600 text-white shadow-lg shadow-brand-500/20 scale-105'
-                    : 'bg-slate-900/80 hover:bg-slate-850 text-slate-400 hover:text-white border border-slate-800'
+                    ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20 scale-105'
+                    : 'bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 shadow-xs'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -313,21 +313,21 @@ export const LandingPage = () => {
         </div>
 
         {/* Preview Frame */}
-        <div className="relative rounded-3xl bg-gradient-to-b from-slate-900/90 to-slate-950/95 border border-slate-800 p-6 sm:p-8 shadow-2xl backdrop-blur-2xl">
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 border-b border-slate-800/80 pb-6 mb-6">
+        <div className="relative rounded-3xl bg-white border border-slate-200 p-6 sm:p-8 shadow-xl">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 border-b border-slate-100 pb-6 mb-6">
             <div className="space-y-1 max-w-xl">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <selectedPreview.icon className="w-5 h-5 text-brand-400" />
+              <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                <selectedPreview.icon className="w-5 h-5 text-brand-600" />
                 {selectedPreview.title}
               </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">{selectedPreview.description}</p>
+              <p className="text-xs text-slate-500 leading-relaxed">{selectedPreview.description}</p>
             </div>
 
             <div className="flex items-center gap-4 shrink-0">
               {selectedPreview.metrics.map((m, i) => (
-                <div key={i} className="p-3 rounded-xl bg-slate-950/80 border border-slate-850 text-center min-w-[110px]">
-                  <div className="text-[10px] text-slate-400">{m.label}</div>
-                  <div className="text-sm font-bold text-brand-300 mt-0.5">{m.value}</div>
+                <div key={i} className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center min-w-[110px]">
+                  <div className="text-[10px] text-slate-500 font-semibold">{m.label}</div>
+                  <div className="text-sm font-bold text-brand-700 mt-0.5">{m.value}</div>
                 </div>
               ))}
             </div>
@@ -335,8 +335,8 @@ export const LandingPage = () => {
 
           {/* Module Live Action Button */}
           <div className="flex items-center justify-between pt-2">
-            <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            <div className="flex items-center gap-2 text-xs text-slate-500 font-mono">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
               <span>Real-time WebSocket & REST Telemetry Connected</span>
             </div>
 
@@ -352,11 +352,11 @@ export const LandingPage = () => {
       {/* 4. Instant Role-Based Access Credentials Card */}
       <section id="roles" className="relative z-10 py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center space-y-3 mb-12">
-          <h2 className="text-xs font-bold text-brand-400 uppercase tracking-widest">Enterprise Security Matrix</h2>
-          <p className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h2 className="text-xs font-bold text-brand-600 uppercase tracking-widest">Enterprise Security Matrix</h2>
+          <p className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
             Role-Based Access Control (RBAC)
           </p>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-2xl mx-auto">
+          <p className="text-xs sm:text-sm text-slate-500 max-w-2xl mx-auto">
             Test any of the pre-configured enterprise personnel profiles. Each role unlocks specific modules according to strict corporate governance.
           </p>
         </div>
@@ -365,25 +365,25 @@ export const LandingPage = () => {
           {ENTERPRISE_ROLES.map((r, i) => (
             <div
               key={i}
-              className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all space-y-4 relative group"
+              className="p-6 rounded-3xl bg-white border border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md transition-all space-y-4 relative group"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-white font-mono">{r.role}</span>
-                <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-950 text-slate-300 border border-slate-800">
+                <span className="text-xs font-bold text-slate-900 font-mono">{r.role}</span>
+                <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
                   {r.badge}
                 </span>
               </div>
 
-              <p className="text-xs text-slate-300 leading-relaxed min-h-[36px]">{r.desc}</p>
+              <p className="text-xs text-slate-600 leading-relaxed min-h-[36px]">{r.desc}</p>
 
-              <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-850 space-y-1 text-xs font-mono">
-                <div className="text-slate-400 flex justify-between">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1 text-xs font-mono">
+                <div className="text-slate-500 flex justify-between">
                   <span>Email:</span>
-                  <span className="text-brand-300">{r.email}</span>
+                  <span className="text-brand-700 font-semibold">{r.email}</span>
                 </div>
-                <div className="text-slate-400 flex justify-between">
+                <div className="text-slate-500 flex justify-between">
                   <span>Password:</span>
-                  <span className="text-slate-200">Admin@12345</span>
+                  <span className="text-slate-800 font-semibold">Admin@12345</span>
                 </div>
               </div>
 
@@ -400,69 +400,69 @@ export const LandingPage = () => {
       {/* 5. Enterprise Feature Pillars Grid */}
       <section id="features" className="relative z-10 py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center space-y-3 mb-12">
-          <h2 className="text-xs font-bold text-brand-400 uppercase tracking-widest">Comprehensive Capability</h2>
-          <p className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h2 className="text-xs font-bold text-brand-600 uppercase tracking-widest">Comprehensive Capability</h2>
+          <p className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
             Six Engines in One Operating System
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="p-6 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-brand-500/30 transition-all space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400">
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 hover:border-brand-300 shadow-sm transition-all space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-600">
               <BrainCircuit className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-white">Nexus AI Copilot</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="text-base font-bold text-slate-900">Nexus AI Copilot</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
               Real-time conversational assistant analyzing stockout risk, client credit ceilings, and pricing adjustments.
             </p>
           </div>
 
-          <div className="p-6 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-brand-500/30 transition-all space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 hover:border-brand-300 shadow-sm transition-all space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
               <Boxes className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-white">Procurement & Auto Reorder</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="text-base font-bold text-slate-900">Procurement & Auto Reorder</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
               1-Click AI automated purchase order issuance to replenish safety stocks across all regional facilities.
             </p>
           </div>
 
-          <div className="p-6 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-brand-500/30 transition-all space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 hover:border-brand-300 shadow-sm transition-all space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
               <Truck className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-white">Freight Logistics Dispatch</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="text-base font-bold text-slate-900">Freight Logistics Dispatch</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
               Multi-carrier tracking with printable manifests, vehicle numbers, and visual transit milestones.
             </p>
           </div>
 
-          <div className="p-6 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-brand-500/30 transition-all space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 hover:border-brand-300 shadow-sm transition-all space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600">
               <Receipt className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-white">Accounts Receivable Aging</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="text-base font-bold text-slate-900">Accounts Receivable Aging</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
               Commercial Net-30/60 invoicing, automatic tax calculations, and wire remittance reconciliation.
             </p>
           </div>
 
-          <div className="p-6 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-brand-500/30 transition-all space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 hover:border-brand-300 shadow-sm transition-all space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600">
               <Building2 className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-white">Multi-Branch Node Tenancy</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="text-base font-bold text-slate-900">Multi-Branch Node Tenancy</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
               Spatial warehouse capacity utilization, fleet tracking, and regional management isolation.
             </p>
           </div>
 
-          <div className="p-6 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-brand-500/30 transition-all space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400">
+          <div className="p-6 rounded-3xl bg-white border border-slate-200 hover:border-brand-300 shadow-sm transition-all space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-pink-50 border border-pink-200 flex items-center justify-center text-pink-600">
               <FileCode2 className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-white">Webhooks & Data Exporters</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="text-base font-bold text-slate-900">Webhooks & Data Exporters</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
               Cryptographic HMAC event dispatchers and 1-click consolidated CSV downloads for audits.
             </p>
           </div>
@@ -470,18 +470,18 @@ export const LandingPage = () => {
       </section>
 
       {/* 6. Footer */}
-      <footer className="relative z-10 border-t border-slate-850 py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-400">
+      <footer className="relative z-10 border-t border-slate-200 bg-white py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-500">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-600 p-0.5">
-              <div className="w-full h-full bg-slate-950 rounded-[6px] flex items-center justify-center">
-                <Layers className="w-4 h-4 text-brand-400" />
+              <div className="w-full h-full bg-white rounded-[6px] flex items-center justify-center">
+                <Layers className="w-4 h-4 text-brand-600" />
               </div>
             </div>
-            <span className="font-bold text-white">BizCore Nexus Enterprise v4.0.0</span>
+            <span className="font-bold text-slate-900">BizCore Nexus Enterprise v4.0.0</span>
           </div>
 
-          <div className="flex items-center gap-6 text-slate-400">
+          <div className="flex items-center gap-6 text-slate-500">
             <span>SOC-2 Type II Certified</span>
             <span>•</span>
             <span>ISO 27001 Compliant</span>

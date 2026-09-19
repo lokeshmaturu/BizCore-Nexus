@@ -5,20 +5,9 @@ import {
   TrendingUp,
   Briefcase,
   Plus,
-  Search,
-  Filter,
   RefreshCw,
   Building2,
-  DollarSign,
   Truck,
-  CheckCircle2,
-  Clock,
-  Send,
-  UserCheck,
-  ShieldCheck,
-  FileText,
-  ChevronRight,
-  ArrowUpRight,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
@@ -100,7 +89,7 @@ export const SalesPage = () => {
         })
       ).unwrap();
 
-      toast.success(`Wholesale client ${newCustomer.companyName} onboarded!`);
+      toast.success(`Account for ${newCustomer.companyName} onboarded.`);
       setIsCustomerModalOpen(false);
       setNewCustomer({
         companyName: '',
@@ -113,30 +102,26 @@ export const SalesPage = () => {
         discountPercentage: '0',
         branch: 'Main Distribution Hub',
       });
-      dispatch(fetchCustomers());
+      loadData();
     } catch (err) {
       toast.error(err || 'Failed to onboard customer');
     }
   };
 
   const handleAddLineItem = () => {
-    setOrderItems([
-      ...orderItems,
-      { productId: '', quantity: 1, unitPrice: 0, discountPercentage: 0 },
-    ]);
+    setOrderItems([...orderItems, { productId: '', quantity: 1, unitPrice: 0, discountPercentage: 0 }]);
   };
 
   const handleRemoveLineItem = (index) => {
-    if (orderItems.length > 1) {
-      setOrderItems(orderItems.filter((_, idx) => idx !== index));
-    }
+    if (orderItems.length <= 1) return;
+    setOrderItems(orderItems.filter((_, i) => i !== index));
   };
 
-  const handleItemProductChange = (index, prodId) => {
-    const foundProduct = products.find((p) => p._id === prodId);
+  const handleItemProductChange = (index, productId) => {
+    const prod = products.find((p) => p._id === productId);
     const updated = [...orderItems];
-    updated[index].productId = prodId;
-    updated[index].unitPrice = foundProduct ? foundProduct.sellingPrice : 0;
+    updated[index].productId = productId;
+    updated[index].unitPrice = prod ? prod.sellingPrice : 0;
     setOrderItems(updated);
   };
 
@@ -147,20 +132,19 @@ export const SalesPage = () => {
   };
 
   const calculateSubtotal = () => {
-    return orderItems.reduce((acc, item) => {
-      return acc + (item.quantity || 1) * (item.unitPrice || 0);
-    }, 0);
+    return orderItems.reduce((sum, item) => sum + (item.quantity || 0) * (item.unitPrice || 0), 0);
   };
 
   const handleCreateOrder = async (e) => {
     e.preventDefault();
     if (!selectedCustomerId) {
-      toast.error('Please select an enterprise customer.');
+      toast.error('Please select a wholesale customer');
       return;
     }
-    const validItems = orderItems.filter((i) => i.productId && i.quantity > 0);
+
+    const validItems = orderItems.filter((item) => item.productId && item.quantity > 0);
     if (validItems.length === 0) {
-      toast.error('Please select at least one valid product SKU.');
+      toast.error('Please add at least one valid line item');
       return;
     }
 
@@ -173,30 +157,24 @@ export const SalesPage = () => {
         })
       ).unwrap();
 
-      toast.success('Wholesale requisition created and inventory reserved!');
+      toast.success('Wholesale requisition created and dispatched to processing!');
       setIsOrderModalOpen(false);
-      setSelectedCustomerId('');
       setOrderItems([{ productId: '', quantity: 1, unitPrice: 0, discountPercentage: 0 }]);
-      dispatch(fetchOrders());
-      dispatch(fetchProducts());
+      loadData();
     } catch (err) {
-      toast.error(err || 'Failed to create order');
+      toast.error(err || 'Failed to create wholesale order');
     }
   };
 
   const handleAdvanceStatus = async (orderId, currentStatus) => {
-    let nextStatus = 'Approved';
-    if (currentStatus === 'Processing' || currentStatus === 'Approved') nextStatus = 'Shipped';
-    if (currentStatus === 'Shipped') nextStatus = 'Delivered';
+    let nextStatus = 'Processing';
+    if (currentStatus === 'Pending' || currentStatus === 'Processing') nextStatus = 'Shipped';
+    else if (currentStatus === 'Shipped') nextStatus = 'Delivered';
 
     try {
-      await dispatch(
-        changeOrderStatus({
-          id: orderId,
-          statusData: { status: nextStatus },
-        })
-      ).unwrap();
-      toast.success(`Order advanced to '${nextStatus}'!`);
+      await dispatch(changeOrderStatus({ id: orderId, status: nextStatus })).unwrap();
+      toast.success(`Consignment advanced to ${nextStatus}`);
+      loadData();
     } catch (err) {
       toast.error(err || 'Failed to update status');
     }
@@ -206,7 +184,7 @@ export const SalesPage = () => {
   const grandTotal = subtotal + (parseFloat(shippingFee) || 0);
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in text-slate-900">
       <PageTitle
         title="Sales, Wholesale Pipeline & B2B CRM"
         subtitle="Manage corporate accounts, wholesale requisitions, and dispatch pipelines."
@@ -239,16 +217,16 @@ export const SalesPage = () => {
       />
 
       {/* Tabs and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 glass-panel p-3 rounded-2xl border border-slate-800">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3 rounded-2xl border border-slate-200/90 shadow-xs">
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-950/60 rounded-xl border border-slate-800/80 w-full sm:w-auto flex-wrap">
+        <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200 w-full sm:w-auto flex-wrap">
           <button
             type="button"
             onClick={() => setActiveTab('pipeline')}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
               activeTab === 'pipeline'
-                ? 'bg-brand-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-brand-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <TrendingUp className="w-4 h-4" />
@@ -258,10 +236,10 @@ export const SalesPage = () => {
           <button
             type="button"
             onClick={() => setActiveTab('orders')}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
               activeTab === 'orders'
-                ? 'bg-brand-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-brand-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <Truck className="w-4 h-4" />
@@ -271,10 +249,10 @@ export const SalesPage = () => {
           <button
             type="button"
             onClick={() => setActiveTab('customers')}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
               activeTab === 'customers'
-                ? 'bg-brand-600 text-white shadow-md'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-brand-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <Briefcase className="w-4 h-4" />
@@ -295,7 +273,7 @@ export const SalesPage = () => {
         </div>
       </div>
 
-      {/* Tab 0: Modern CRM Pipeline Kanban Board (HubSpot / Salesforce Style) */}
+      {/* Tab 0: Modern CRM Pipeline Kanban Board */}
       {activeTab === 'pipeline' && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3.5 overflow-x-auto pb-4">
@@ -306,17 +284,17 @@ export const SalesPage = () => {
               return (
                 <div
                   key={stage}
-                  className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-3 flex flex-col gap-3 min-w-[200px]"
+                  className="bg-slate-50 border border-slate-200/90 rounded-2xl p-3 flex flex-col gap-3 min-w-[200px] shadow-2xs"
                 >
                   {/* Column Header */}
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-800/60">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-200">
                     <div>
-                      <span className="text-xs font-bold text-slate-200">{stage}</span>
+                      <span className="text-xs font-bold text-slate-800">{stage}</span>
                       <span className="text-[10px] text-slate-500 font-mono block">
                         {formatCurrency(stageTotal)}
                       </span>
                     </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
                       {dealsInStage.length}
                     </span>
                   </div>
@@ -328,30 +306,30 @@ export const SalesPage = () => {
                         key={deal.id}
                         layout
                         whileHover={{ scale: 1.02 }}
-                        className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-brand-500/50 shadow-sm transition-all space-y-2 cursor-pointer"
+                        className="p-3 rounded-xl bg-white border border-slate-200 hover:border-brand-400 shadow-2xs transition-all space-y-2 cursor-pointer"
                       >
                         <div className="flex items-center justify-between text-[10px]">
-                          <span className="font-mono text-brand-400 font-bold">{deal.id}</span>
+                          <span className="font-mono text-brand-700 font-bold">{deal.id}</span>
                           <span
-                            className={`px-1.5 py-0.5 rounded font-semibold ${
+                            className={`px-1.5 py-0.5 rounded font-bold ${
                               deal.priority === 'Urgent'
-                                ? 'bg-rose-500/20 text-rose-300'
+                                ? 'bg-rose-50 text-rose-700 border border-rose-200'
                                 : deal.priority === 'High'
-                                ? 'bg-amber-500/20 text-amber-300'
-                                : 'bg-blue-500/20 text-blue-300'
+                                ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                                : 'bg-blue-50 text-blue-700 border border-blue-200'
                             }`}
                           >
                             {deal.priority}
                           </span>
                         </div>
 
-                        <p className="text-xs font-bold text-white leading-tight">{deal.client}</p>
+                        <p className="text-xs font-bold text-slate-900 leading-tight">{deal.client}</p>
 
-                        <div className="flex items-center justify-between pt-1 border-t border-slate-800/60 text-[11px]">
-                          <span className="font-mono font-bold text-emerald-400">
+                        <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[11px]">
+                          <span className="font-mono font-bold text-emerald-700">
                             {formatCurrency(deal.value)}
                           </span>
-                          <span className="text-slate-400">{deal.owner}</span>
+                          <span className="text-slate-500">{deal.owner}</span>
                         </div>
                       </motion.div>
                     ))}
@@ -362,12 +340,14 @@ export const SalesPage = () => {
           </div>
         </div>
       )}
+
+      {/* Tab 1: Orders Table */}
       {activeTab === 'orders' && (
-        <div className="glass-panel rounded-2xl border border-slate-800 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm">
           {isLoading ? (
             <div className="p-6 space-y-4">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex items-center gap-4 py-2 border-b border-slate-800/40">
+                <div key={i} className="flex items-center gap-4 py-2 border-b border-slate-100">
                   <Skeleton className="w-10 h-10 rounded-xl" />
                   <div className="flex-1 space-y-2">
                     <Skeleton className="h-4 w-1/4" />
@@ -377,44 +357,44 @@ export const SalesPage = () => {
               ))}
             </div>
           ) : orders.length === 0 ? (
-            <div className="p-12 text-center text-slate-400 space-y-2">
-              <Truck className="w-10 h-10 mx-auto text-slate-600 mb-2" />
-              <p className="text-sm font-semibold text-slate-300">No wholesale orders recorded</p>
+            <div className="p-12 text-center text-slate-500 space-y-2">
+              <Truck className="w-10 h-10 mx-auto text-slate-400 mb-2" />
+              <p className="text-sm font-bold text-slate-800">No wholesale orders recorded</p>
               <p className="text-xs">Requisition an order using the 'New Wholesale Order' button.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="text-slate-400 bg-slate-950/40 border-b border-slate-800/80">
-                    <th className="py-3 px-6 font-semibold">Order ID & Date</th>
-                    <th className="py-3 px-6 font-semibold">Client Enterprise</th>
-                    <th className="py-3 px-6 font-semibold">Consignment Total</th>
-                    <th className="py-3 px-6 font-semibold">Line Items</th>
-                    <th className="py-3 px-6 font-semibold">Status</th>
-                    <th className="py-3 px-6 font-semibold text-right">Pipeline Action</th>
+                  <tr className="text-slate-500 bg-slate-50 border-b border-slate-200/80">
+                    <th className="py-3 px-6 font-bold uppercase tracking-wider text-[11px]">Order ID & Date</th>
+                    <th className="py-3 px-6 font-bold uppercase tracking-wider text-[11px]">Client Enterprise</th>
+                    <th className="py-3 px-6 font-bold uppercase tracking-wider text-[11px]">Consignment Total</th>
+                    <th className="py-3 px-6 font-bold uppercase tracking-wider text-[11px]">Line Items</th>
+                    <th className="py-3 px-6 font-bold uppercase tracking-wider text-[11px]">Status</th>
+                    <th className="py-3 px-6 font-bold uppercase tracking-wider text-[11px] text-right">Pipeline Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/50 text-slate-200">
+                <tbody className="divide-y divide-slate-100 text-slate-700">
                   {orders.map((o) => (
-                    <tr key={o._id} className="hover:bg-slate-800/30 transition-colors">
+                    <tr key={o._id} className="hover:bg-slate-50 transition-colors">
                       <td className="py-3.5 px-6">
-                        <span className="font-mono font-bold text-brand-300">
+                        <span className="font-mono font-bold text-brand-700">
                           {o.orderNumber}
                         </span>
-                        <p className="text-[10px] text-slate-500 font-mono">
+                        <p className="text-[10px] text-slate-400 font-mono">
                           {formatDate(o.createdAt)}
                         </p>
                       </td>
                       <td className="py-3.5 px-6">
-                        <div className="font-semibold text-white">{o.customerName}</div>
+                        <div className="font-bold text-slate-900">{o.customerName}</div>
                         <div className="text-[10px] text-slate-400">{o.branch}</div>
                       </td>
-                      <td className="py-3.5 px-6 font-mono font-bold text-emerald-400">
+                      <td className="py-3.5 px-6 font-mono font-bold text-emerald-700">
                         {formatCurrency(o.totalAmount)}
                       </td>
                       <td className="py-3.5 px-6">
-                        <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[11px] font-mono">
+                        <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 text-[11px] font-mono">
                           {o.items?.length || 1} SKUs
                         </span>
                       </td>
@@ -449,7 +429,7 @@ export const SalesPage = () => {
                               : 'Advance Pipeline'}
                           </Button>
                         ) : (
-                          <span className="text-[11px] text-emerald-400 font-mono font-medium">
+                          <span className="text-[11px] text-emerald-700 font-mono font-bold">
                             Completed ✓
                           </span>
                         )}
@@ -465,25 +445,25 @@ export const SalesPage = () => {
 
       {/* Tab 2: B2B Customer Directory */}
       {activeTab === 'customers' && (
-        <div className="glass-panel rounded-2xl border border-slate-800 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="text-slate-400 bg-slate-950/40 border-b border-slate-800/80">
-                  <th className="py-3 px-6 font-semibold">Company & Contact</th>
-                  <th className="py-3 px-6 font-semibold">Tier</th>
-                  <th className="py-3 px-6 font-semibold">Credit Limit</th>
-                  <th className="py-3 px-6 font-semibold">Outstanding Balance</th>
-                  <th className="py-3 px-6 font-semibold">Payment Terms</th>
-                  <th className="py-3 px-6 font-semibold text-right">Status</th>
+                <tr className="text-slate-500 bg-slate-50 border-b border-slate-200/80">
+                  <th className="py-3 px-6 font-bold uppercase tracking-wider text-[11px]">Company & Contact</th>
+                  <th className="py-3 px-6 font-bold uppercase tracking-wider text-[11px]">Tier</th>
+                  <th className="py-3 px-6 font-bold uppercase tracking-wider text-[11px]">Credit Limit</th>
+                  <th className="py-3 px-6 font-bold uppercase tracking-wider text-[11px]">Outstanding Balance</th>
+                  <th className="py-3 px-6 font-bold uppercase tracking-wider text-[11px]">Payment Terms</th>
+                  <th className="py-3 px-6 font-bold uppercase tracking-wider text-[11px] text-right">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/50 text-slate-200">
+              <tbody className="divide-y divide-slate-100 text-slate-700">
                 {customers.map((c) => (
-                  <tr key={c._id} className="hover:bg-slate-800/30 transition-colors">
+                  <tr key={c._id} className="hover:bg-slate-50 transition-colors">
                     <td className="py-3.5 px-6">
-                      <div className="font-bold text-white">{c.companyName}</div>
-                      <div className="text-[11px] text-slate-400">
+                      <div className="font-bold text-slate-900">{c.companyName}</div>
+                      <div className="text-[11px] text-slate-500">
                         {c.contactPerson} ({c.email})
                       </div>
                     </td>
@@ -491,22 +471,22 @@ export const SalesPage = () => {
                       <span
                         className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
                           c.tier === 'Platinum'
-                            ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                            ? 'bg-purple-50 text-purple-700 border border-purple-200'
                             : c.tier === 'Gold'
-                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                            : 'bg-slate-800 text-slate-300 border border-slate-700'
+                            ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                            : 'bg-slate-100 text-slate-700 border border-slate-200'
                         }`}
                       >
                         {c.tier}
                       </span>
                     </td>
-                    <td className="py-3.5 px-6 font-mono text-slate-200">
+                    <td className="py-3.5 px-6 font-mono text-slate-800">
                       {formatCurrency(c.creditLimit)}
                     </td>
-                    <td className="py-3.5 px-6 font-mono font-bold text-amber-400">
+                    <td className="py-3.5 px-6 font-mono font-bold text-amber-700">
                       {formatCurrency(c.outstandingBalance)}
                     </td>
-                    <td className="py-3.5 px-6 font-mono text-slate-300">{c.paymentTerms}</td>
+                    <td className="py-3.5 px-6 font-mono text-slate-600">{c.paymentTerms}</td>
                     <td className="py-3.5 px-6 text-right">
                       <Badge variant={c.status === 'Active' ? 'success' : 'danger'} size="sm">
                         {c.status}
@@ -556,11 +536,11 @@ export const SalesPage = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
                 Wholesale Tier
               </label>
               <select
-                className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2.5 text-sm text-slate-100"
+                className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-600"
                 value={newCustomer.tier}
                 onChange={(e) => setNewCustomer({ ...newCustomer, tier: e.target.value })}
               >
@@ -572,11 +552,11 @@ export const SalesPage = () => {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
                 Payment Terms
               </label>
               <select
-                className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2.5 text-sm text-slate-100"
+                className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-600"
                 value={newCustomer.paymentTerms}
                 onChange={(e) => setNewCustomer({ ...newCustomer, paymentTerms: e.target.value })}
               >
@@ -628,11 +608,11 @@ export const SalesPage = () => {
       >
         <form onSubmit={handleCreateOrder} className="space-y-4">
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+            <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
               Wholesale Client Entity
             </label>
             <select
-              className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2.5 text-sm text-slate-100"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-600"
               value={selectedCustomerId}
               onChange={(e) => setSelectedCustomerId(e.target.value)}
               required
@@ -649,13 +629,13 @@ export const SalesPage = () => {
           {/* Line Items Builder */}
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
                 Consignment Line Items
               </span>
               <button
                 type="button"
                 onClick={handleAddLineItem}
-                className="text-xs text-brand-400 hover:text-brand-300 font-semibold"
+                className="text-xs text-brand-600 hover:text-brand-700 font-bold"
               >
                 + Add Another Line Item
               </button>
@@ -664,11 +644,11 @@ export const SalesPage = () => {
             {orderItems.map((item, idx) => (
               <div
                 key={idx}
-                className="grid grid-cols-12 gap-2.5 p-3 rounded-xl bg-slate-950/60 border border-slate-800 items-center"
+                className="grid grid-cols-12 gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 items-center"
               >
                 <div className="col-span-7">
                   <select
-                    className="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-2 text-xs text-slate-100"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-brand-600"
                     value={item.productId}
                     onChange={(e) => handleItemProductChange(idx, e.target.value)}
                     required
@@ -686,7 +666,7 @@ export const SalesPage = () => {
                   <input
                     type="number"
                     min="1"
-                    className="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-2 py-2 text-xs text-slate-100 font-mono text-center"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-2 py-2 text-xs text-slate-900 font-mono text-center focus:outline-none focus:border-brand-600"
                     placeholder="Qty"
                     value={item.quantity}
                     onChange={(e) => handleItemQtyChange(idx, e.target.value)}
@@ -694,7 +674,7 @@ export const SalesPage = () => {
                   />
                 </div>
 
-                <div className="col-span-2 text-right font-mono font-bold text-xs text-emerald-400">
+                <div className="col-span-2 text-right font-mono font-bold text-xs text-emerald-700">
                   {formatCurrency((item.quantity || 1) * (item.unitPrice || 0))}
                 </div>
 
@@ -702,7 +682,7 @@ export const SalesPage = () => {
                   <button
                     type="button"
                     onClick={() => handleRemoveLineItem(idx)}
-                    className="text-slate-500 hover:text-rose-400 text-sm"
+                    className="text-slate-400 hover:text-rose-600 text-sm font-bold"
                   >
                     ✕
                   </button>
@@ -712,21 +692,21 @@ export const SalesPage = () => {
           </div>
 
           {/* Pricing Calculation Summary */}
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2 text-xs font-mono">
-            <div className="flex justify-between text-slate-400">
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs font-mono">
+            <div className="flex justify-between text-slate-600">
               <span>Subtotal:</span>
-              <span className="text-white">{formatCurrency(subtotal)}</span>
+              <span className="text-slate-900 font-bold">{formatCurrency(subtotal)}</span>
             </div>
-            <div className="flex justify-between text-slate-400 items-center">
+            <div className="flex justify-between text-slate-600 items-center">
               <span>Freight / Shipping:</span>
               <input
                 type="number"
-                className="w-24 bg-slate-950 border border-slate-700 px-2 py-1 rounded text-right text-xs"
+                className="w-24 bg-white border border-slate-300 px-2 py-1 rounded text-right text-xs font-bold text-slate-900 focus:outline-none focus:border-brand-600"
                 value={shippingFee}
                 onChange={(e) => setShippingFee(e.target.value)}
               />
             </div>
-            <div className="flex justify-between text-sm font-bold text-emerald-400 pt-2 border-t border-slate-800">
+            <div className="flex justify-between text-sm font-bold text-emerald-700 pt-2 border-t border-slate-200">
               <span>Grand Total:</span>
               <span>{formatCurrency(grandTotal)}</span>
             </div>
