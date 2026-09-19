@@ -63,13 +63,104 @@ app.use(httpLogger);
 // 5. Global Rate Limiter
 app.use('/api', globalLimiter);
 
-// 6. Root Route & Information
+// 6. Root Route & Telemetry Information
 app.get('/', (req, res) => {
+  const acceptsHtml = req.accepts('html');
+  if (acceptsHtml && !req.xhr) {
+    return res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>BizCore Nexus – API Service</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+        <style>
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body {
+            background-color: #070b14;
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px;
+          }
+          .card {
+            background: rgba(17, 24, 39, 0.9);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 540px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+          }
+          .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+          }
+          h1 { font-size: 26px; font-weight: 800; margin-bottom: 8px; color: #ffffff; }
+          p { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 24px; }
+          .btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+          .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+          }
+          .btn-primary {
+            background: linear-gradient(135deg, #0c8fe9 0%, #025aa1 100%);
+            color: #ffffff;
+            box-shadow: 0 10px 20px -5px rgba(12, 143, 233, 0.4);
+          }
+          .btn-primary:hover { opacity: 0.95; transform: translateY(-1px); }
+          .btn-secondary {
+            background: #1e293b;
+            color: #cbd5e1;
+            border: 1px solid #334155;
+          }
+          .btn-secondary:hover { background: #334155; color: #ffffff; }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <div class="badge">● Backend API Operational</div>
+          <h1>BizCore Nexus Server</h1>
+          <p>This is the RESTful API microservice powering the BizCore Nexus Enterprise Operating System. Access the live UI application via the Frontend Portal.</p>
+          <div class="btn-group">
+            <a href="${CLIENT_URL || 'http://localhost:5173'}" class="btn btn-primary">Open Frontend UI Portal →</a>
+            <a href="/api/health" class="btn btn-secondary">API Health Telemetry</a>
+          </div>
+        </div>
+      </body>
+      </html>
+    `);
+  }
+
   res.json({
     name: 'BizCore Nexus Enterprise API',
-    version: '1.0.0',
+    version: '2.0.0',
     description: 'AI-Powered Business Operating System for Distribution & Wholesale Enterprises',
     documentation: '/api/health',
+    clientUrl: CLIENT_URL,
     status: 'OPERATIONAL',
   });
 });
