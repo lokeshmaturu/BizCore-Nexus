@@ -1,0 +1,30 @@
+{
+  "name": "bizcore-nexus",
+  "version": "1.0.0",
+  "description": "BizCore Nexus – AI-Powered Business Operating System for Distribution & Wholesale Enterprises",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,cyan\" \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "server:dev": "npm --prefix server run dev",
+    "client:dev": "npm --prefix client run dev",
+    "server": "npm --prefix server start",
+    "client": "npm --prefix client run build",
+    "install:all": "npm install && npm --prefix server install && npm --prefix client install",
+    "format": "prettier --write \"**/*.{js,jsx,json,css,md}\""
+  },
+  "keywords": [
+    "enterprise",
+    "saas",
+    "distribution",
+    "wholesale",
+    "erp",
+    "mern",
+    "rbac"
+  ],
+  "author": "BizCore Architecture Team",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prettier": "^3.2.5"
+  }
+}
