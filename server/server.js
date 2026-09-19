@@ -25,29 +25,54 @@ app.use(
   })
 );
 
-// 2. CORS Configuration (Supports credentials & cookies)
+// 2. CORS Configuration (Supports credentials & cookies for both local and production)
+const allowedOrigins = [
+  'https://biz-core-nexus-wp6u.vercel.app',
+  'https://biz-core-nexus.vercel.app',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:5000',
+];
+
+if (process.env.CLIENT_URL) {
+  const cleanClientUrl = process.env.CLIENT_URL.replace(/\/$/, '');
+  if (!allowedOrigins.includes(cleanClientUrl)) {
+    allowedOrigins.push(cleanClientUrl);
+  }
+}
+
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, Postman)
+    // Allow requests with no origin (like mobile apps, curl, Postman, server-to-server)
     if (!origin) return callback(null, true);
-    
-    // Whitelist check
-    const allowedOrigins = [
-      CLIENT_URL,
-      'http://localhost:5173',
-      'http://127.0.0.1:5173',
-      'http://localhost:3000',
-    ];
-    
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS policy violation: Origin not allowed by BizCore Nexus.'));
+
+    // Check if origin is explicitly in whitelist
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
     }
+
+    // Allow all Vercel deployment and preview URLs (*.vercel.app)
+    if (origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+
+    // Allow all localhost origins
+    if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+      return callback(null, true);
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+
+    callback(new Error(`CORS policy violation: Origin '${origin}' is not authorized by BizCore Nexus API.`));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['Set-Cookie'],
 };
 
 app.use(cors(corsOptions));

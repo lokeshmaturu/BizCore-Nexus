@@ -12,8 +12,8 @@ const getCookieOptions = () => {
   return {
     expires: new Date(Date.now() + cookieDays * 24 * 60 * 60 * 1000),
     httpOnly: true,
-    secure: isProduction, // HTTPS only in production
-    sameSite: isProduction ? 'strict' : 'lax',
+    secure: isProduction, // HTTPS required for sameSite: 'none'
+    sameSite: isProduction ? 'none' : 'lax',
     path: '/',
   };
 };
@@ -56,7 +56,7 @@ const clearTokenCookie = (res) => {
     expires: new Date(Date.now() - 1000),
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'strict' : 'lax',
+    sameSite: isProduction ? 'none' : 'lax',
     path: '/',
   });
 };
