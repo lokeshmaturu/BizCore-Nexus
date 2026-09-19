@@ -43,6 +43,7 @@ const aiSlice = createSlice({
     clearCopilotHistory: (state) => {
       state.history = [];
       state.currentResponse = null;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -68,6 +69,17 @@ const aiSlice = createSlice({
       .addCase(queryCopilot.rejected, (state, action) => {
         state.isQuerying = false;
         state.error = action.payload;
+        state.history.push({
+          role: 'assistant',
+          response: {
+            title: 'Diagnostic Alert',
+            answer: action.payload || 'Live ERP cluster telemetry link timed out. Re-establishing telemetry connection...',
+            category: 'SYSTEM_NOTICE',
+            keyMetrics: [],
+            recommendations: [],
+          },
+          timestamp: new Date().toISOString(),
+        });
       })
       .addCase(fetchAIRecommendations.fulfilled, (state, action) => {
         state.recommendations = action.payload;
